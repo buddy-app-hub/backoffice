@@ -12,10 +12,10 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">Firebase UID</th>
-            <th scope="col" className="px-6 py-3">User Type</th>
-            <th scope="col" className="px-6 py-3">First Name</th>
-            <th scope="col" className="px-6 py-3">Last Name</th>
-            <th scope="col" className="px-6 py-3">Gender</th>
+            <th scope="col" className="px-6 py-3">Tipo</th>
+            <th scope="col" className="px-6 py-3">Nombre</th>
+            <th scope="col" className="px-6 py-3">Apellido</th>
+            <th scope="col" className="px-6 py-3">Género</th>
             <th scope="col" className="px-6 py-3">Email</th>
           </tr>
         </thead>
