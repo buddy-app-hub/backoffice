@@ -2,8 +2,10 @@ import { User } from '../types/User';
 import { Buddy } from '../types/Buddy';
 import { Elder } from '../types/Elder';
 
-const ELDERS_URL = 'http://localhost:8086/elders';
-const BUDDIES_URL = 'http://localhost:8086/buddies';
+const backofficeUrl = process.env.NEXT_PUBLIC_BACKOFFICE_URL;
+
+const ELDERS_URL = `http://${backofficeUrl}/elders`;
+const BUDDIES_URL = `http://${backofficeUrl}/buddies`;
 
 const fetchWithAuth = async (url: string, token: string): Promise<Response> => {
     return fetch(url, {
