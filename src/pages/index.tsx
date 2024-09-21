@@ -7,7 +7,7 @@ const Home: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const token = process.env.NEXT_PUBLIC_TMP_FIREBASE_TOKEN || 'no-token'; // TODO: replace with auth method to login as admin and get token
+  const token = process.env.NEXT_PUBLIC_TMP_FIREBASE_TOKEN || 'no-token'; // TODO: replace with auth method to sign in as admin and get token
 
   useEffect(() => {
     const loadUsers = async () => {
