@@ -4,8 +4,8 @@ import { Elder } from '../types/Elder';
 
 const backofficeUrl = process.env.NEXT_PUBLIC_BACKOFFICE_URL;
 
-const ELDERS_URL = `http://${backofficeUrl}/elders`;
-const BUDDIES_URL = `http://${backofficeUrl}/buddies`;
+const ELDERS_URL = `${backofficeUrl}/elders`;
+const BUDDIES_URL = `${backofficeUrl}/buddies`;
 
 const fetchWithAuth = async (url: string, token: string): Promise<Response> => {
     return fetch(url, {
