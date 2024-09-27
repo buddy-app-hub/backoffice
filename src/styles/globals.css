@@ -4,30 +4,57 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+  --action-primary-background: #3EB5FD;
+  --action-primary-hover: #1E8CBD;
+  --action-primary-text: white;
 }
 
-@media (prefers-color-scheme: dark) {
+/*@media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
+}*/
 
 body {
-  color: rgb(var(--foreground-rgb));
+  background-color: #E1E1E1;
+/*  color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb));*/
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+input {
+  color: black;
+}
+
+button {
+  background-color: var(--action-primary-background);
+  color: var(--action-primary-text);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--action-primary-hover);
+}
+
+button:focus {
+  outline-color: var(--action-primary-hover);
+}
+
+button:focus-visible {
+  outline-color: var(--action-primary-hover);
 }
