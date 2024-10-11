@@ -2,7 +2,7 @@ import React from "react";
 
 export interface ITableColumn {
     label: string,
-    attribute: string,
+    attribute: string | string[],
     cellClass?: string,
     onRenderCell?: (entity) => React.ReactNode
 }
@@ -61,7 +61,10 @@ function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
                     c.onRenderCell ?
                         c.onRenderCell(entity)
                         :
-                        entity[c.attribute] || '-'
+                        Array.isArray(c.attribute) ?
+                            c.attribute.reduce((acc, key) => acc && acc[key], entity)
+                            :
+                            entity[c.attribute] || '-'
                 }
             </td>
         ))

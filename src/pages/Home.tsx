@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import UsersTable from '@/components/UsersTable';
+import UsersTable from '@/components/user/UsersTable';
 import { User } from '@/types/User';
 import {ApiUser} from "@/services/userApi";
 import {Card} from "@/components/layout/Card";
