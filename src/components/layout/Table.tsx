@@ -10,7 +10,7 @@ export interface ITableColumn {
 interface TableProps<T> {
     key: string,
     columns: ITableColumn[],
-    data: T[]
+    data?: T[]
 }
 
 export function Table<T>(props: TableProps<T>) {
@@ -18,6 +18,7 @@ export function Table<T>(props: TableProps<T>) {
 
     return (
         <div className="relative overflow-x-auto">
+
             <table className="w-full text-sm text-left rtl:text-right">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
@@ -31,14 +32,17 @@ export function Table<T>(props: TableProps<T>) {
                 <tbody>
 
                 {
-                    data.map((entity, idx) => (
-                        <tr key={`table_${key}_data_${idx}`} className="bg-white border-b text-black">
-                            <TableRowCell key={`table_${key}_data_${idx}`}
-                                          entity={entity}
-                                          columns={columns}
-                            />
-                        </tr>
-                    ))
+                    data ?
+                        data.map((entity, idx) => (
+                            <tr key={`table_${key}_data_${idx}`} className="bg-white border-b text-black">
+                                <TableRowCell key={`table_${key}_data_${idx}`}
+                                              entity={entity}
+                                              columns={columns}
+                                />
+                            </tr>
+                        ))
+                        :
+                        <TableBodyLoading colSpan={columns.length} />
                 }
                 </tbody>
             </table>
@@ -53,7 +57,6 @@ interface TableRowCellProps<T> {
 }
 
 function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
-
     return (
         columns.map((c, idx) => (
             <td key={`${key}_data_${idx}`} className={`px-6 py-4 ${c.cellClass || ''}`}>
@@ -67,6 +70,22 @@ function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
                             entity[c.attribute] || '-'
                 }
             </td>
+        ))
+    )
+}
+
+interface TablyBodyLoadingProps {
+    colSpan: number
+}
+
+function TableBodyLoading({ colSpan }: TablyBodyLoadingProps) {
+    return (
+        Array.from({ length: 10 }).map((_, idx) => (
+            <tr key={`table_body_loading_${idx}`} className="animate-pulse">
+                <td colSpan={colSpan}>
+                    <div className="h-3.5 bg-gray-200 rounded w-full mt-2.5 mb-2"></div>
+                </td>
+            </tr>
         ))
     )
 }

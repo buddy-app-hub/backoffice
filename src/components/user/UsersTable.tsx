@@ -4,7 +4,7 @@ import {ITableColumn, Table} from "@/components/layout/Table";
 import {UserDetailDialog} from "@/components/user/UserDetailDialog";
 
 interface UsersTableProps {
-  users: User[];
+  users?: User[];
 }
 
 const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
@@ -18,11 +18,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
     { label: 'Nombre', attribute: [UserFields.PersonalData, UserPersonalDataFields.FirstName] },
     { label: 'Nombre', attribute: [UserFields.PersonalData, UserPersonalDataFields.LastName] },
     { label: 'Género', attribute: [UserFields.PersonalData, UserPersonalDataFields.Gender], cellClass: "capitalize" },
-    { label: 'Email', attribute: UserFields.Email },
-    {
-      label: '', attribute: '',
-      onRenderCell: (e: User) => <button onClick={() => setUserDetail(e)}>Ver</button>
-    }
+    { label: 'Email', attribute: UserFields.Email }
   ]
 
   const onCloseDialogDetail = () => setUserDetail(undefined)

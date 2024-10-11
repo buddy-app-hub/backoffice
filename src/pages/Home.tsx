@@ -8,26 +8,24 @@ import {useSessionUser} from "@/hooks/useSessionUser";
 const Home: React.FC = () => {
     const { signOutUser } = useSessionUser();
 
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [users, setUsers] = useState<User[]>();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadUsers = async () => {
+            setUsers(undefined);
+
             try {
                 const users = await ApiUser.fetchUsers();
                 setUsers(users);
             } catch (error) {
                 setError(error)
-            } finally {
-                setLoading(false);
             }
         };
 
         loadUsers();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
     if (error) return (
         <div>
             <p>Error: {error}</p>
