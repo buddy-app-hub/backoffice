@@ -10,6 +10,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <title>Buddy Backoffice</title>
           <meta name="description" content="Backoffice web de Buddy" />
           <link rel="icon" href="/buddy_logo.svg" />
+
+            <script
+                type="module"
+                src="node_modules/@material-tailwind/html@latest/scripts/tooltip.js"
+            ></script>
         </Head>
 
         <Component {...pageProps} />
