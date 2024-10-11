@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import UsersTable from '@/components/UsersTable';
 import { User } from '@/types/User';
 import {ApiUser} from "@/services/userApi";
+import {Card} from "@/components/layout/Card";
+import {useSessionUser} from "@/hooks/useSessionUser";
 
 const Home: React.FC = () => {
+    const { signOutUser } = useSessionUser();
 
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -28,14 +31,15 @@ const Home: React.FC = () => {
     if (error) return (
         <div>
             <p>Error: {error}</p>
-            <button onClick={handleLogout}>Salir</button>
+            <button onClick={signOutUser}>Salir</button>
         </div>
     );
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mt-4 mb-8">Usuarios</h1>
-            <UsersTable users={users} />
+            <Card title={"Usuarios"}>
+                <UsersTable users={users} />
+            </Card>
         </div>
     );
 };
