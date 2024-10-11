@@ -1,41 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import UsersTable from '@/components/UsersTable';
+import UsersTable from '@/components/user/UsersTable';
 import { User } from '@/types/User';
 import {ApiUser} from "@/services/userApi";
+import {Card} from "@/components/layout/Card";
+import {useSessionUser} from "@/hooks/useSessionUser";
 
 const Home: React.FC = () => {
+    const { signOutUser } = useSessionUser();
 
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [users, setUsers] = useState<User[]>();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadUsers = async () => {
+            setUsers(undefined);
+
             try {
                 const users = await ApiUser.fetchUsers();
                 setUsers(users);
             } catch (error) {
                 setError(error)
-            } finally {
-                setLoading(false);
             }
         };
 
         loadUsers();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
     if (error) return (
         <div>
             <p>Error: {error}</p>
-            <button onClick={handleLogout}>Salir</button>
+            <button onClick={signOutUser}>Salir</button>
         </div>
     );
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mt-4 mb-8">Usuarios</h1>
-            <UsersTable users={users} />
+            <Card title={"Usuarios"}>
+                <UsersTable users={users} />
+            </Card>
         </div>
     );
 };
