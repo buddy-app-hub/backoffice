@@ -19,16 +19,15 @@ const mapClassesByColor : Record<ChipColor, { text: string, textHover: string, b
 
 function Chip({ label, color = 'default', onClick, icon }: ChipProps) {
     const classesBase = classNames(
-        "flex flex-row gap-1 justify-between items-center bg-blue-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full",
+        "flex flex-row gap-1 justify-between items-center text-xs font-medium me-2 px-2.5 py-0.5 rounded-full",
         mapClassesByColor[color].text,
         mapClassesByColor[color].bg,
         {
+            "hover:cursor-pointer": onClick,
             [mapClassesByColor[color].textHover]: onClick,
             [mapClassesByColor[color].bgHover]: onClick
         }
     )
-
-    console.log(classesBase)
 
     return (
         <span className={classesBase} onClick={onClick}>

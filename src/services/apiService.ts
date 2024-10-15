@@ -4,7 +4,7 @@ import {auth} from "@/utils/firebase";
 
 const backofficeUrl = process.env.NEXT_PUBLIC_BACKOFFICE_URL;
 
-const fetchWithAuth = async (url: string): Promise<Response> => {
+const fetchWithAuth = async (url: string, methods: string, body: any = undefined): Promise<Response> => {
     const token = tokenStorage.get();
     const finalUrl = `/api${url}`;
     let headers = {};
@@ -21,6 +21,8 @@ const fetchWithAuth = async (url: string): Promise<Response> => {
 
     return fetch(finalUrl, {
         headers: headers,
+        method: methods,
+        body: body
     });
 };
 
@@ -41,6 +43,9 @@ const getError = async (error) => {
 
 export const ApiService = {
     get: async (url: string) =>
-        fetchWithAuth(url).then(getResponseBody).catch(getError)
+        fetchWithAuth(url, "GET").then(getResponseBody).catch(getError),
+
+    post: async (url: string, body: any = undefined) =>
+        fetchWithAuth(url, "POST", body).then().catch(getError)
 }
 

@@ -1,11 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useState} from "react";
 import {User, UserFields} from "@/types/User";
 import {Checks, Warning} from "@phosphor-icons/react";
 import Chip from "@/components/layout/Chip";
 import Tooltip from "@/components/layout/Tooltip";
+import {UserBuddyDetailDialog} from "@/components/user/UserBuddyDetailDialog";
 
 interface UserTypeStateChipProps {
-    user: User
+    user: User,
+    onSubmit: () => void
 }
 
 const iconsByBuddyState : Record<boolean, Record<boolean, React.ReactNode>> = {
@@ -18,16 +20,19 @@ const colorByBuddyState : Record<boolean, Record<boolean, string>> = {
     false: { true: 'warning', false: undefined }
 }
 
-export function UserTypeStateChip({ user }: UserTypeStateChipProps) {
+export function UserTypeStateChip({ user, onSubmit }: UserTypeStateChipProps) {
+    const [userDetail, setUserDetail] = useState<User>();
+
     const userType = user[UserFields.UserType];
     const isBuddy = userType == "buddy";
-
     const isApproved : boolean = isBuddy && user[UserFields.IsApprovedBuddy];
     const pending : boolean = isBuddy && user[UserFields.IsApplicationToBeBuddyUnderReview];
-
     const icon = isBuddy ? iconsByBuddyState[isApproved][pending] : undefined;
-    const color = isBuddy ? colorByBuddyState[isApproved][pending] : undefined;
-    const onClick = undefined;
+    const color = isBuddy ? colorByBuddyState[isApproved][pending] : 'default';
+
+    const openBuddyDetail = () => setUserDetail(user);
+
+    const closeBuddyDetail = () => setUserDetail(undefined);
 
     const tooltipText =
         isApproved ? `Buddy aprobado` : pending ? 'Pendiente de aprobación' : undefined;
@@ -36,9 +41,17 @@ export function UserTypeStateChip({ user }: UserTypeStateChipProps) {
         <React.Fragment>
 
             <Tooltip tooltipText={tooltipText}>
-                <Chip label={userType} color={color} onClick={onClick} icon={icon} />
+                <Chip label={userType}
+                      color={color}
+                      onClick={isBuddy ? openBuddyDetail : undefined}
+                      icon={icon}
+                />
             </Tooltip>
 
+            <UserBuddyDetailDialog user={userDetail}
+                                   onClose={closeBuddyDetail}
+                                   onSubmit={onSubmit}
+            />
         </React.Fragment>
     )
 }
