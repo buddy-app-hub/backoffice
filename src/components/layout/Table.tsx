@@ -1,8 +1,15 @@
 import React from "react";
+import moment from "moment";
+
+export enum TableColumnType {
+    Default,
+    Date
+}
 
 export interface ITableColumn {
     label: string,
     attribute: string | string[],
+    type?: TableColumnType,
     cellClass?: string,
     onRenderCell?: (entity) => React.ReactNode
 }
@@ -57,6 +64,25 @@ interface TableRowCellProps<T> {
 }
 
 function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
+
+    const renderValue = (c: ITableColumn) : string => {
+        let value = '-';
+        const valueAttribute = entity[c.attribute];
+
+        if (valueAttribute) {
+            switch (c.type) {
+                case TableColumnType.Date:
+                    value = moment(valueAttribute).format("DD/MM/YYYY");
+                    break;
+                case TableColumnType.Default:
+                default:
+                    value = entity[c.attribute];
+            }
+        }
+
+        return value;
+    }
+
     return (
         columns.map((c, idx) => (
             <td key={`${key}_data_${idx}`} className={`px-6 py-4 ${c.cellClass || ''}`}>
@@ -67,7 +93,7 @@ function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
                         Array.isArray(c.attribute) ?
                             c.attribute.reduce((acc, key) => acc && acc[key], entity)
                             :
-                            entity[c.attribute] || '-'
+                            renderValue(c)
                 }
             </td>
         ))

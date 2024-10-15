@@ -11,18 +11,18 @@ const Home: React.FC = () => {
     const [users, setUsers] = useState<User[]>();
     const [error, setError] = useState<string | null>(null);
 
+    const loadUsers = async () => {
+        setUsers(undefined);
+
+        try {
+            const users = await ApiUser.fetchUsers();
+            setUsers(users);
+        } catch (error) {
+            setError(error)
+        }
+    };
+
     useEffect(() => {
-        const loadUsers = async () => {
-            setUsers(undefined);
-
-            try {
-                const users = await ApiUser.fetchUsers();
-                setUsers(users);
-            } catch (error) {
-                setError(error)
-            }
-        };
-
         loadUsers();
     }, []);
 
@@ -36,7 +36,7 @@ const Home: React.FC = () => {
     return (
         <div>
             <Card title={"Usuarios"}>
-                <UsersTable users={users} />
+                <UsersTable users={users} onReloadTable={loadUsers} />
             </Card>
         </div>
     );

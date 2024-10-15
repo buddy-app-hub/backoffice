@@ -19,9 +19,9 @@ export function Dialog({ open, title, children, action, onClose}: DialogProps) {
 
                         <div className={"border-b-2 border-neutral-100"}>
                             <div className={"py-4 px-3 flex flex-row justify-between items-center"}>
-                                <h1 className="text-2xl font-bold">{title}</h1>
+                                <h1 className="text-2xl font-bold" style={{ textTransform: 'none' }}>{title}</h1>
 
-                                <X onClick={onClose} />
+                                <X onClick={onClose} className={"hover:cursor-pointer"} />
                             </div>
                         </div>
 

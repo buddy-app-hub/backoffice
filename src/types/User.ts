@@ -2,7 +2,13 @@ export enum UserFields {
     FirebaseUID = 'firebaseUID',
     UserType = 'userType',
     Email = 'email',
-    PersonalData = 'personalData'
+    PersonalData = 'personalData',
+    RegistrationDate = 'registrationDate',
+
+    IsBlocked = 'isBlocked',
+    IsIdentityValidated = 'isIdentityValidated',
+    IsApprovedBuddy = 'isApprovedBuddy',
+    IsApplicationToBeBuddyUnderReview = 'isApplicationToBeBuddyUnderReview',
 }
 
 export interface User {
@@ -10,6 +16,12 @@ export interface User {
     [UserFields.UserType]: string;
     [UserFields.Email]: string;
     [UserFields.PersonalData]: UserPersonalData;
+    [UserFields.RegistrationDate]: Date,
+
+    [UserFields.IsBlocked]: boolean,
+    [UserFields.IsIdentityValidated]: boolean,
+    [UserFields.IsApprovedBuddy]: boolean,
+    [UserFields.IsApplicationToBeBuddyUnderReview]: boolean,
 }
 
 export enum UserPersonalDataFields {
