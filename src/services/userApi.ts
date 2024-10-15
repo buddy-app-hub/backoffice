@@ -1,4 +1,4 @@
-import {User, UserFields} from '@/types/User';
+import {User, UserFields, UserPersonalDataFields} from '@/types/User';
 import {ApiService} from "@/services/apiService";
 
 const sortUserByRegistrationDate = (a: User, b: User) =>
@@ -14,7 +14,7 @@ export const ApiUser = {
 
         const users: User[] = [...elders, ...buddies];
 
-        return users.sort(sortUserByRegistrationDate);
+        return users.filter(x => !!(x[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName])).sort(sortUserByRegistrationDate);
     },
 
     approveBuddy: async (id: string): Promise<boolean> => {
