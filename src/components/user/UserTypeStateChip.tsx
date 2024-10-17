@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {User, UserFields} from "@/types/User";
 import {Checks, Warning} from "@phosphor-icons/react";
-import Chip from "@/components/layout/Chip";
+import Chip, {ChipColor} from "@/components/layout/Chip";
 import Tooltip from "@/components/layout/Tooltip";
 import {UserBuddyDetailDialog} from "@/components/user/UserBuddyDetailDialog";
 
@@ -10,14 +10,14 @@ interface UserTypeStateChipProps {
     onSubmit: () => void
 }
 
-const iconsByBuddyState : Record<boolean, Record<boolean, React.ReactNode>> = {
-    true: { true: <Checks />,  false: <Checks /> },
-    false: { true: <Warning />, false: undefined }
+const iconsByBuddyState : Record<'true' | 'false', Record<'true' | 'false', React.ReactNode>> = {
+    'true': { 'true': <Checks />,  'false': <Checks /> },
+    'false': { 'true': <Warning />, 'false': undefined }
 }
 
-const colorByBuddyState : Record<boolean, Record<boolean, string>> = {
-    true: { true: 'success',  false: 'success' },
-    false: { true: 'warning', false: undefined }
+const colorByBuddyState : Record<'true' | 'false', Record<'true' | 'false', ChipColor>> = {
+    'true': { 'true': 'success',  'false': 'success' },
+    'false': { 'true': 'warning', 'false': 'default' }
 }
 
 export function UserTypeStateChip({ user, onSubmit }: UserTypeStateChipProps) {
@@ -27,8 +27,8 @@ export function UserTypeStateChip({ user, onSubmit }: UserTypeStateChipProps) {
     const isBuddy = userType == "buddy";
     const isApproved : boolean = isBuddy && user[UserFields.IsApprovedBuddy];
     const pending : boolean = isBuddy && user[UserFields.IsApplicationToBeBuddyUnderReview];
-    const icon = isBuddy ? iconsByBuddyState[isApproved][pending] : undefined;
-    const color = isBuddy ? colorByBuddyState[isApproved][pending] : 'default';
+    const icon = isBuddy ? iconsByBuddyState[isApproved ? 'true' : 'false'][pending ? 'true' : 'false'] : undefined;
+    const color = isBuddy ? colorByBuddyState[isApproved ? 'true' : 'false'][pending ? 'true' : 'false'] : 'default';
 
     const openBuddyDetail = () => setUserDetail(user);
 

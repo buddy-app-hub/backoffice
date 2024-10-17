@@ -6,21 +6,21 @@ export enum TableColumnType {
     Date
 }
 
-export interface ITableColumn {
+export interface ITableColumn<T> {
     label: string,
     attribute: string | string[],
     type?: TableColumnType,
     cellClass?: string,
-    onRenderCell?: (entity) => React.ReactNode
+    onRenderCell?: (entity: T) => React.ReactNode
 }
 
-interface TableProps<T> {
+interface TableProps<T extends Record<string, any>> {
     key: string,
-    columns: ITableColumn[],
+    columns: ITableColumn<T>[],
     data?: T[]
 }
 
-export function Table<T>(props: TableProps<T>) {
+export function Table<T extends Record<string, any>>(props: TableProps<T>) {
     const { key, columns, data } = props;
 
     return (
@@ -57,16 +57,19 @@ export function Table<T>(props: TableProps<T>) {
     )
 }
 
-interface TableRowCellProps<T> {
+interface TableRowCellProps<T extends Record<string, any>> {
     key: string,
     entity: T,
-    columns: ITableColumn[]
+    columns: ITableColumn<T>[]
 }
 
-function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
+function TableRowCell<T extends Record<string, any>>({ key, entity, columns } : TableRowCellProps<T>) {
 
-    const renderValue = (c: ITableColumn) : string => {
+    const renderValue = (c: ITableColumn<T>) : string => {
         let value = '-';
+
+        if (Array.isArray(c.attribute)) return value;
+
         const valueAttribute = entity[c.attribute];
 
         if (valueAttribute) {
@@ -88,10 +91,27 @@ function TableRowCell<T>({ key, entity, columns } : TableRowCellProps<T>) {
             <td key={`${key}_data_${idx}`} className={`px-6 py-4 ${c.cellClass || ''}`}>
                 {
                     c.onRenderCell ?
-                        c.onRenderCell(entity)
+                        <div>
+                            {c.onRenderCell(entity)}
+                        </div>
                         :
                         Array.isArray(c.attribute) ?
-                            c.attribute.reduce((acc, key) => acc && acc[key], entity)
+                            <div>
+                                {
+                                    (() => {
+                                        const value = c.attribute.reduce((acc, key) => acc && acc[key], entity);
+
+                                        // Verificamos si el valor es renderizable
+                                        if (typeof value === 'string' || typeof value === 'number') {
+                                            return value;
+                                        } else if (typeof value === 'object') {
+                                            return JSON.stringify(value); // Serializa si es un objeto
+                                        } else {
+                                            return ''; // O muestra un valor por defecto
+                                        }
+                                    })()
+                                }
+                            </div>
                             :
                             renderValue(c)
                 }

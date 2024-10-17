@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from 'classnames';
 
-type ChipColor = 'default' | 'warning' | 'success' | 'error'
+export type ChipColor = 'default' | 'warning' | 'success' | 'error'
 
 interface ChipProps {
     label: string

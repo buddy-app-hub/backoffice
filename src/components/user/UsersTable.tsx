@@ -3,6 +3,7 @@ import {User, UserFields, UserPersonalDataFields} from '@/types/User';
 import {ITableColumn, Table, TableColumnType} from "@/components/layout/Table";
 import {UserDetailDialog} from "@/components/user/UserDetailDialog";
 import {UserTypeStateChip} from "@/components/user/UserTypeStateChip";
+import {UserIdentityDialog} from "@/components/user/UserIdentityDialog";
 
 interface UsersTableProps {
   users?: User[];
@@ -11,8 +12,9 @@ interface UsersTableProps {
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, onReloadTable }) => {
   const [userDetail, setUserDetail] = useState<User>();
+  const [userIdentity, setUserIdentity] = useState<User>();
 
-  const columns : ITableColumn[] = [
+  const columns : ITableColumn<User>[] = [
     {
         label: 'Usuario', attribute: '',
         onRenderCell: (user: User) =>
@@ -28,17 +30,21 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onReloadTable }) => {
         onRenderCell: (e: User) => <UserTypeStateChip user={e} onSubmit={onReloadTable} />
     },
     { label: 'Fecha de Registro', attribute: UserFields.RegistrationDate, type: TableColumnType.Date },
-    {
-        label: 'Identidad', attribute: '',
-        onRenderCell: (user: User) =>
-            <div>
-
-            </div>
-    }, // UserFields.IsIdentityValidated
-    { label: 'Email', attribute: UserFields.Email }
+    { label: 'Email', attribute: UserFields.Email },
+      {
+          label: '', attribute: '',
+          onRenderCell: (user: User) =>
+              <button onClick={() => setUserIdentity(user)}
+                      className="flex w-20 justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                  Identidad
+              </button>
+      }, // UserFields.IsIdentityValidated
   ]
 
-  const onCloseDialogDetail = () => setUserDetail(undefined)
+  const onCloseDialogDetail = () => setUserDetail(undefined);
+
+  const onCloseDialogIdentity = () => setUserIdentity(undefined);
 
 
   return (
@@ -50,6 +56,10 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onReloadTable }) => {
 
       <UserDetailDialog user={userDetail}
                         onClose={onCloseDialogDetail}
+      />
+
+      <UserIdentityDialog user={userIdentity}
+                          onClose={onCloseDialogIdentity}
       />
     </div>
   );

@@ -6,7 +6,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import FullScreenLoader from "@/components/FullScreenLoader";
 import {tokenStorage} from "@/utils/tokenStorage";
 import AppBar from "@/components/layout/AppBar";
-import UsersTable from "@/components/UsersTable";
 
 const Index: React.FC = () => {
     const router = useRouter();

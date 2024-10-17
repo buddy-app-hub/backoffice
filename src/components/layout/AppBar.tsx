@@ -11,7 +11,7 @@ export default function AppBar() {
         >
             <div className="flex flex-col max-w-7xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-1 lg:px-2">
                 <div className="flex flex-row items-center justify-between p-4">
-                    <a href="/" className="text-lg font-semibold rounded-lg tracking-widest focus:outline-none focus:shadow-outline">
+                    <a href="#" className="text-lg font-semibold rounded-lg tracking-widest focus:outline-none focus:shadow-outline">
                         <Image
                             priority
                             src={BuddyLogo}

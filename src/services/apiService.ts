@@ -32,7 +32,7 @@ const getResponseBody = async (response: Response) => {
     return await response.json();
 };
 
-const getError = async (error) => {
+const getError = async (error: any) => {
     if (error.status === 401) {
         await signOut(auth);
         window.location.href = '/';
