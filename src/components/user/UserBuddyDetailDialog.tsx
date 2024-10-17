@@ -85,7 +85,7 @@ export function UserBuddyDetailDialog({ user, onClose, onSubmit }: UserBuddyDeta
                         <div className={"grid gap-1"}>
                             <p className={"italic text-gray-500"} style={{ fontSize: '12px' }}>Video presentación</p>
 
-                            <div style={{ textAlign: '-webkit-center' }}>
+                            <div className={"justify-self-center"}>
                                 {
                                     srcPresentation &&
                                         <video controls>

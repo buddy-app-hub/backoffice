@@ -38,4 +38,16 @@ export const FirebaseMediaService = {
             return ''
         }
     },
+
+    getUserIdentityMedia: async (id: string) : Promise<string[]> => {
+        const _storage = getStorage();
+        const storageRef = ref(_storage, `users/${id}/identity`);
+        const result = await listAll(storageRef);
+
+        try {
+            return await Promise.all(result.items.map((itemRef) => getDownloadURL(itemRef)));
+        } catch (e) {
+            return []
+        }
+    },
 }

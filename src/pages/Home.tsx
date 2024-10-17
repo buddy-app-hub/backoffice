@@ -18,7 +18,7 @@ const Home: React.FC = () => {
             const users = await ApiUser.fetchUsers();
             setUsers(users);
         } catch (error) {
-            setError(error)
+            setError('Ocurrio un error')
         }
     };
 

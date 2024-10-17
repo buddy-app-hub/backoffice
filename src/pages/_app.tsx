@@ -27,6 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <script
                 type="module"
                 src="node_modules/@material-tailwind/html@latest/scripts/tooltip.js"
+                async
             ></script>
         </Head>
 
