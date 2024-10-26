@@ -50,7 +50,7 @@ export enum MeetingScheduleFields {
 }
 
 export interface MeetingSchedule {
-  [MeetingScheduleFields.Date]: Date,
+  [MeetingScheduleFields.Date]: string,
   [MeetingScheduleFields.StartHour]: number,
   [MeetingScheduleFields.EndHour]: number,
 }

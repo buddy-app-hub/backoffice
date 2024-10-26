@@ -6,4 +6,11 @@ export const DateFormatter = {
 
     return moment(date).format('DD/MM/YYYY');
   },
+
+  isDateInPast: (date: Date, today: Date = new Date()): boolean => {
+    const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const comparisonDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    return comparisonDate < currentDate;
+  }
 }
