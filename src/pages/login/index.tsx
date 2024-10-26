@@ -44,7 +44,7 @@ const LoginPage = () => {
     setPersistence(auth, browserLocalPersistence)
       .then(async () => {
         const userCredential = await signInWithEmailAndPassword(auth, data[LoginParamsFields.Mail], data[LoginParamsFields.Password]);
-        router.push('/dashboards/analytics');
+        router.push('/dashboards');
 
         return userCredential;
       })
