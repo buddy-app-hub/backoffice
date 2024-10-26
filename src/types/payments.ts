@@ -2,13 +2,17 @@
 export enum PaymentFields {
   Id = 'id',
   PaymentOrderId = 'payment_order_id',
-  ConnectionId = 'connection_id'
+  ConnectionId = 'connection_id',
+  Amount = 'amount',
+  CurrencyId = 'currency_id',
 }
 
 export interface Payment {
   [PaymentFields.Id]: string,
   [PaymentFields.PaymentOrderId]: string,
   [PaymentFields.ConnectionId]: string,
+  [PaymentFields.Amount]: number,
+  [PaymentFields.CurrencyId]: string,
 }
 
 export enum WalletFields {
