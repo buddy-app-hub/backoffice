@@ -1,39 +1,45 @@
-import {User, UserFields, UserPersonalDataFields} from '@/types/User';
-import {ApiService} from "@/services/apiService";
+import {User, UserFields, UserPersonalDataFields} from "src/types/user";
+import {ApiService} from "./apiService";
 
 const sortUserByRegistrationDate = (a: User, b: User) =>
-    a[UserFields.RegistrationDate] > b[UserFields.RegistrationDate] ? -1 : 1;
+  a[UserFields.RegistrationDate] > b[UserFields.RegistrationDate] ? -1 : 1;
 
 export const ApiUser = {
 
-    fetchUsers: async (): Promise<User[]> => {
-        const [elders, buddies] = await Promise.all([
-            ApiService.get('/elders'),
-            ApiService.get('/buddies'),
-        ]);
+  fetchUsers: async ({ searchElders, searchBuddies} = { searchElders: true, searchBuddies: true }): Promise<User[]> => {
+    const promises = [];
+    if (searchElders) promises.push(ApiService.get('/elders'));
 
-        const users: User[] = [...elders, ...buddies];
+    if (searchBuddies) promises.push(ApiService.get('/buddies'));
 
-        return users.filter(x => !!(x[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName])).sort(sortUserByRegistrationDate);
-    },
+    const responses = await Promise.all(promises);
 
-    approveBuddy: async (id: string): Promise<boolean> => {
-        try {
-            await ApiService.post(`/buddies/${id}/approve`);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    },
+    if (!responses || !responses.length) return [];
 
-    rejectBuddy: async (id: string): Promise<boolean> => {
-        try {
-            await ApiService.post(`/buddies/${id}/reject`);
-            return true;
-        } catch (e) {
-            return false;
-        }
+    const users: User[] = responses.flat();
+
+    return users.filter(x => !!(x[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName])).sort(sortUserByRegistrationDate);
+  },
+
+  getBuddyById: async (id: string): Promise<User> => ApiService.get(`/buddies/${id}`),
+
+  approveBuddy: async (id: string): Promise<boolean> => {
+    try {
+      await ApiService.post(`/buddies/${id}/approve`);
+      return true;
+    } catch (e) {
+      return false;
     }
+  },
+
+  rejectBuddy: async (id: string): Promise<boolean> => {
+    try {
+      await ApiService.post(`/buddies/${id}/reject`);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 

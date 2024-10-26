@@ -1,5 +1,5 @@
 class TokenStorage {
-    key: string = 'tokenBuddyBackoffice';
+    key = 'tokenBuddyBackoffice';
 
     public save = (token: string) => sessionStorage.setItem(this.key, token);
 
