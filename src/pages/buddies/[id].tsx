@@ -47,15 +47,22 @@ const BuddyProfilePage = () => {
     }
   }
 
-  useEffect(() => {
+  const loadUser = () => {
+    setBuddy(undefined);
+
     if (id && !Array.isArray(id)) {
       ApiUser.getBuddyById(id)
         .then(setBuddy)
+    }
+  }
+
+  useEffect(() => {
+    if (id && !Array.isArray(id)) {
+      loadUser();
 
       loadConnections();
     }
   }, [id]);
-
 
 
   useEffect(() => {
@@ -69,7 +76,8 @@ const BuddyProfilePage = () => {
       payments: undefined,
       meetings: meetings,
       wallet: wallet,
-      loadConnections: loadConnections
+      loadConnections: loadConnections,
+      loadUser: loadUser
     }}>
       <Grid container spacing={6}>
         <Grid item xs={12} md={5} lg={4}>

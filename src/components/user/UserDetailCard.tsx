@@ -8,14 +8,26 @@ import {getFullNameUser} from "../../utils/userUtils";
 import {Skeleton} from "@mui/lab";
 import {DateFormatter} from "src/utils/dateFormatter";
 import {useRouter} from "next/router";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {UserProfilePageContext} from "../../context/UserProfilePageContext";
 import {NumberFormatter} from "../../utils/numberFormatter";
 import {WalletFields} from "../../types/payments";
+import {UserBuddyDetailDialog} from "../buddies/UserBuddyDetailDialog";
 
 const UserDetailCard = () => {
   const router = useRouter();
-  const { user, connections, wallet } = useContext(UserProfilePageContext)
+  const { user, connections, wallet, loadUser } = useContext(UserProfilePageContext)
+
+  const [openDetailBuddy, setOpenDetailBuddy] = useState<boolean>(false);
+
+  const handleOpenDetailBuddy = () => setOpenDetailBuddy(true);
+
+  const handleCloseDetailBuddy = () => setOpenDetailBuddy(false);
+
+  const onUpdateStatusBuddy = () => {
+    setOpenDetailBuddy(false);
+    loadUser();
+  }
 
   const onNavigateBack = () => router.back();
 
@@ -138,7 +150,7 @@ const UserDetailCard = () => {
                               size='medium'
                               label={"Aprobado"}
                               color={'success'}
-                              onClick={() => alert('Va')}
+                              onClick={handleOpenDetailBuddy}
                   />
                   :
                   user[UserFields.IsApplicationToBeBuddyUnderReview] ?
@@ -146,7 +158,7 @@ const UserDetailCard = () => {
                                 size='medium'
                                 label={"Pendiente de aprobación"}
                                 color={'warning'}
-                                onClick={() => alert('Va')}
+                                onClick={handleOpenDetailBuddy}
                     />
                     :
                     <CustomChip skin='light'
@@ -160,6 +172,12 @@ const UserDetailCard = () => {
           </Stack>
         </Stack>
       </CardContent>
+
+      <UserBuddyDetailDialog open={openDetailBuddy}
+                             user={user}
+                             onClose={handleCloseDetailBuddy}
+                             onSubmit={onUpdateStatusBuddy}
+      />
     </Card>
   )
 }

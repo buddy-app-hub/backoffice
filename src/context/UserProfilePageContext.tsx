@@ -9,5 +9,6 @@ export const UserProfilePageContext = React.createContext({
   meetings: undefined as Meeting[] | undefined,
   wallet: undefined as WalletSummary | undefined,
   payments: undefined as number[] | undefined,
-  loadConnections: () => { }
+  loadConnections: () => { },
+  loadUser: () => { }
 });
