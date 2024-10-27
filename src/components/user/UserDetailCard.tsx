@@ -1,6 +1,6 @@
 import CustomAvatar from "../../@core/components/mui/avatar";
 import CustomChip from "../../@core/components/mui/chip";
-import {Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
 import Icon from "../../@core/components/icon";
 import UserAvatar from "./UserAvatar";
 import {UserFields, UserPersonalDataFields} from "../../types/user";
@@ -13,16 +13,22 @@ import {UserProfilePageContext} from "../../context/UserProfilePageContext";
 import {NumberFormatter} from "../../utils/numberFormatter";
 import {WalletFields} from "../../types/payments";
 import {UserBuddyDetailDialog} from "../buddies/UserBuddyDetailDialog";
+import UserIdentityDialog from "./UserIdentityDialog";
 
 const UserDetailCard = () => {
   const router = useRouter();
   const { user, connections, wallet, loadUser } = useContext(UserProfilePageContext)
 
   const [openDetailBuddy, setOpenDetailBuddy] = useState<boolean>(false);
+  const [openIdentityBuddy, setOpenIdentityBuddy] = useState<boolean>(false);
 
   const handleOpenDetailBuddy = () => setOpenDetailBuddy(true);
 
   const handleCloseDetailBuddy = () => setOpenDetailBuddy(false);
+
+  const handleOpenIdentityBuddy = () => setOpenIdentityBuddy(true);
+
+  const handleCloseIdentityBuddy = () => setOpenIdentityBuddy(false);
 
   const onUpdateStatusBuddy = () => {
     setOpenDetailBuddy(false);
@@ -106,7 +112,7 @@ const UserDetailCard = () => {
         <Stack direction={'row'} justifyContent={'space-between'}>
           <Typography variant='h6'>Detalle</Typography>
 
-          <Button size={'small'}>
+          <Button size={'small'} onClick={handleOpenIdentityBuddy}>
             Ver identidad
           </Button>
         </Stack>
@@ -177,6 +183,11 @@ const UserDetailCard = () => {
                              user={user}
                              onClose={handleCloseDetailBuddy}
                              onSubmit={onUpdateStatusBuddy}
+      />
+
+      <UserIdentityDialog open={openIdentityBuddy}
+                          user={user}
+                          onClose={handleCloseIdentityBuddy}
       />
     </Card>
   )

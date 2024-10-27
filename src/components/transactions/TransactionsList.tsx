@@ -27,9 +27,10 @@ const sortTransactionsByRegistrationDate = (a: Transaction, b: Transaction) => {
 }
 
 const TransactionsList = ({transactions}: TransactionsListProps) => {
+  const previewNumber = 6;
   const transactionsSorted = transactions ? transactions.sort(sortTransactionsByRegistrationDate) : undefined;
-  const lasted = transactionsSorted ? transactionsSorted.slice(0, 6) : [];
-  const previous = transactionsSorted ? transactionsSorted.slice(6) : [];
+  const lasted = transactionsSorted ? transactionsSorted.slice(0, previewNumber) : [];
+  const previous = transactionsSorted ? transactionsSorted.slice(previewNumber) : [];
 
   const [showAll, setShowAll] = useState<boolean>(false);
 
@@ -64,10 +65,14 @@ const TransactionsList = ({transactions}: TransactionsListProps) => {
               </Collapse>
 
               <Stack direction={'row'} alignSelf={'center'}>
-                <Button onClick={toggleShowAll}>
-                  {showAll ? "Ver menos" : "Ver todo"}
-                </Button>
+              {
+                transactionsSorted.length > previewNumber &&
+                  <Button onClick={toggleShowAll}>
+                    {showAll ? "Ver menos" : "Ver todo"}
+                  </Button>
+              }
               </Stack>
+
             </React.Fragment>
           :
           Array.from({ length }).map((_, idx) => (
@@ -150,11 +155,10 @@ const TransactionsComponent = ({transaction}: TransactionsComponentProps) => {
       fontStyle = 'italic'
     }
 
-    //@ts-ignore
     return (
       <Typography variant={'body2'}
                   color={color}
-                  weight={weight}
+                  fontWeight={weight}
                   fontStyle={fontStyle}
       >
         {`${prefix}${NumberFormatter.toStringCurrency(transaction[TransactionFields.CurrencyId], transaction[TransactionFields.Amount])}`}

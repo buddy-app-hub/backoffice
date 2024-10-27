@@ -100,7 +100,3 @@ export function UserBuddyDetailDialog({ open, user, onClose, onSubmit }: UserBud
     </Dialog>
   )
 }
-
-
-/*
-      */
