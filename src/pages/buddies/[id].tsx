@@ -11,6 +11,7 @@ import UserConnectionsTotals from "../../components/user/UserConnectionsTotals";
 import {WalletSummary} from "../../types/payments";
 import {ApiPayments} from "../../services/paymentApi";
 import UserWalletDetail from "../../components/user/UserWalletDetail";
+import UserProfitPerMonths from "../../components/user/UserProfitPerMonths";
 
 const BuddyProfilePage = () => {
   const router = useRouter();
@@ -82,6 +83,10 @@ const BuddyProfilePage = () => {
 
           <Grid item xs={12} md={6}>
             <UserWalletDetail />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <UserProfitPerMonths />
           </Grid>
         </Grid>
       </Grid>
