@@ -23,6 +23,8 @@ export const ApiUser = {
 
   getBuddyById: async (id: string): Promise<User> => ApiService.get(`/buddies/${id}`),
 
+  getElderById: async (id: string): Promise<User> => ApiService.get(`/elders/${id}`),
+
   approveBuddy: async (id: string): Promise<boolean> => {
     try {
       await ApiService.post(`/buddies/${id}/approve`);

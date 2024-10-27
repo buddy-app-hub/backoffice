@@ -17,7 +17,8 @@ import UserIdentityDialog from "./UserIdentityDialog";
 
 const UserDetailCard = () => {
   const router = useRouter();
-  const { user, connections, wallet, loadUser } = useContext(UserProfilePageContext)
+  const { user, connections, wallet, loadUser } = useContext(UserProfilePageContext);
+  const isBuddy = user && user[UserFields.UserType] === "buddy";
 
   const [openDetailBuddy, setOpenDetailBuddy] = useState<boolean>(false);
   const [openIdentityBuddy, setOpenIdentityBuddy] = useState<boolean>(false);
@@ -75,22 +76,25 @@ const UserDetailCard = () => {
 
       <CardContent sx={{ my: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
-            <CustomAvatar skin='light' variant='rounded' sx={{ mr: 4, width: 44, height: 44 }}>
-              <Icon icon='mdi:wallet-bifold' />
-            </CustomAvatar>
-            <div>
-              {
-                wallet ?
-                  <Typography variant='h6'>
-                    {NumberFormatter.priceToStringCurrency(wallet[WalletFields.Total])}
-                  </Typography>
-                  :
-                  <Skeleton variant={'text'} width={'50%'} />
-              }
-              <Typography variant='body2'>Ganancia total</Typography>
-            </div>
-          </Box>
+          {
+            isBuddy &&
+              <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                <CustomAvatar skin='light' variant='rounded' sx={{ mr: 4, width: 44, height: 44 }}>
+                  <Icon icon='mdi:wallet-bifold' />
+                </CustomAvatar>
+                <div>
+                  {
+                    wallet ?
+                      <Typography variant='h6'>
+                        {NumberFormatter.priceToStringCurrency(wallet[WalletFields.Total])}
+                      </Typography>
+                      :
+                      <Skeleton variant={'text'} width={'50%'} />
+                  }
+                  <Typography variant='body2'>Ganancia total</Typography>
+                </div>
+              </Box>
+          }
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CustomAvatar skin='light' variant='rounded' sx={{ mr: 4, width: 44, height: 44 }}>
               <Icon icon='mdi:connection' />
@@ -144,40 +148,43 @@ const UserDetailCard = () => {
         </Box>
       </CardContent>
 
-      <CardContent sx={{ marginTop: 2 }}>
-        <Stack spacing={2}>
-          <Typography variant='body2' color={'text'} fontWeight={500}>Condición de Buddy</Typography>
+      {
+        isBuddy &&
+          <CardContent sx={{ marginTop: 2 }}>
+            <Stack spacing={2}>
+              <Typography variant='body2' color={'text'} fontWeight={500}>Condición de Buddy</Typography>
 
-          <Stack width={'100%'} alignItems={'center'}>
-            {
-              user ?
-                user[UserFields.IsApprovedBuddy] ?
-                  <CustomChip skin='light'
-                              size='medium'
-                              label={"Aprobado"}
-                              color={'success'}
-                              onClick={handleOpenDetailBuddy}
-                  />
-                  :
-                  user[UserFields.IsApplicationToBeBuddyUnderReview] ?
-                    <CustomChip skin='light'
-                                size='medium'
-                                label={"Pendiente de aprobación"}
-                                color={'warning'}
-                                onClick={handleOpenDetailBuddy}
-                    />
+              <Stack width={'100%'} alignItems={'center'}>
+                {
+                  user ?
+                    user[UserFields.IsApprovedBuddy] ?
+                      <CustomChip skin='light'
+                                  size='medium'
+                                  label={"Aprobado"}
+                                  color={'success'}
+                                  onClick={handleOpenDetailBuddy}
+                      />
+                      :
+                      user[UserFields.IsApplicationToBeBuddyUnderReview] ?
+                        <CustomChip skin='light'
+                                    size='medium'
+                                    label={"Pendiente de aprobación"}
+                                    color={'warning'}
+                                    onClick={handleOpenDetailBuddy}
+                        />
+                        :
+                        <CustomChip skin='light'
+                                    size='medium'
+                                    label={"En proceso de registración"}
+                                    color={'primary'}
+                        />
                     :
-                    <CustomChip skin='light'
-                                size='medium'
-                                label={"En proceso de registración"}
-                                color={'primary'}
-                    />
-                :
-                <Skeleton />
-            }
-          </Stack>
-        </Stack>
-      </CardContent>
+                    <Skeleton />
+                }
+              </Stack>
+            </Stack>
+          </CardContent>
+      }
 
       <UserBuddyDetailDialog open={openDetailBuddy}
                              user={user}

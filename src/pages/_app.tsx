@@ -83,18 +83,6 @@ if (themeConfig.routingLoader) {
   })
 }
 
-
-
-const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
-  if (guestGuard) {
-    return <GuestGuard fallback={<Spinner />}>{children}</GuestGuard>
-  } else if (!guestGuard && !authGuard) {
-    return <>{children}</>
-  } else {
-    return <AuthGuard fallback={<Spinner />}>{children}</AuthGuard>
-  }
-}
-
 // ** Configure JSS & ClassName
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
@@ -106,11 +94,6 @@ const App = (props: ExtendedAppProps) => {
 
   const setConfig = Component.setConfig ?? undefined
 
-  const authGuard = Component.authGuard ?? true
-
-  const guestGuard = Component.guestGuard ?? false
-
-  // --------
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -125,6 +108,7 @@ const App = (props: ExtendedAppProps) => {
         goToLogin();
         setLoading(false);
       } else {
+        setLoading(true);
         user.getIdToken()
           .then(token => {
             if (token)
@@ -139,8 +123,6 @@ const App = (props: ExtendedAppProps) => {
 
     return () => unsubscribe();
   }, [auth, router]);
-
-  //-----
 
   if (loading)
     return <Spinner />

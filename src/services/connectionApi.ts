@@ -8,6 +8,9 @@ export const ApiConnection = {
     ApiService.get(`${ApiConnection._path}`),
 
   getConnectionByBuddyId: async (id: string) : Promise<Connection[]> =>
-    ApiService.get(`${ApiConnection._path}/buddies/${id}`)
+    ApiService.get(`${ApiConnection._path}/buddies/${id}`),
+
+  getConnectionByElderId: async (id: string) : Promise<Connection[]> =>
+    ApiService.get(`${ApiConnection._path}/elders/${id}`)
 }
 
