@@ -80,7 +80,7 @@ const UsersTotalQuantity = () => {
               total: {
                 show: true,
                 fontSize: '0.875rem',
-                label: 'Total de usuarios',
+                label: 'usuarios',
                 color: theme.palette.text.secondary,
                 formatter: value => `${value.globals.seriesTotals.reduce((total: number, num: number) => total + num)}`
               }
@@ -137,9 +137,8 @@ const UsersTotalQuantity = () => {
         {
           userTotals && !userTotals.empty && !error &&
           <Grid container sx={{ my: [0, 4, 1.625] }}>
-            <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
+            <Grid item xs={12} sm={6} sx={{ mb: [3, 0], aspectRatio: '1 / 1' }} >
               <ReactApexcharts type='donut'
-                               height={220}
                                series={[userTotals.type.buddies, userTotals.type.elders]}
                                options={userTotals.options}
               />

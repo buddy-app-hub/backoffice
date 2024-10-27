@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {User, UserFields} from "../../types/user";
-import {ApiUser} from "../../services/userApi";
+import {User, UserFields} from "src/types/user";
+import {ApiUser} from "src/services/userApi";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {columnEmail, columnGenre, columnName, columnRegistrationDate} from "../user/usersTableColumns";
 import {Card, CardHeader} from "@mui/material";

@@ -1,4 +1,4 @@
-import {Card, CardHeader, IconButton} from "@mui/material";
+import {Card, CardHeader, Grid, IconButton} from "@mui/material";
 import {DataGrid, GridColDef, GridRenderCellParams, GridSortDirection} from "@mui/x-data-grid";
 import {useEffect, useState} from "react";
 import {User, UserFields} from "src/types/user";
@@ -6,7 +6,14 @@ import {ApiUser} from "../../services/userApi";
 import React from 'react';
 import {router} from "next/client";
 import Icon from "../../@core/components/icon";
-import {columnEmail, columnGenre, columnName, columnRegistrationDate} from "src/components/user/usersTableColumns";
+import {
+  columnBuddyConfirmed,
+  columnEmail,
+  columnGenre,
+  columnName,
+  columnRegistrationDate
+} from "src/components/user/usersTableColumns";
+import BuddiesTotals from "../../components/buddies/BuddiesTotals";
 
 const Buddies = () => {
   const [pageSize, setPageSize] = useState<number>(10);
@@ -21,6 +28,7 @@ const Buddies = () => {
     columnGenre,
     columnEmail,
     columnRegistrationDate,
+    columnBuddyConfirmed,
     {
       flex: 0.01,
       field: 'actions',
@@ -39,31 +47,37 @@ const Buddies = () => {
   ];
 
   return (
-    <React.Fragment>
-      <Card>
-        <CardHeader
-          title='Buddies'
-        />
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={3}>
+        <BuddiesTotals buddies={buddies} />
+      </Grid>
 
-        <DataGrid
-          autoHeight
-          rows={buddies}
-          columns={columns}
-          pageSize={pageSize}
-          disableSelectionOnClick
-          getRowId={(row) => row[UserFields.FirebaseUID]}
-          rowsPerPageOptions={[7, 10, 25, 50]}
+      <Grid item xs={12} md={9}>
+        <Card>
+          <CardHeader
+            title='Buddies'
+          />
 
-          initialState={{
-            sorting: {
-              sortModel: [{ field: UserFields.RegistrationDate, sort: 'desc' as GridSortDirection }],
-            },
-          }}
+          <DataGrid
+            autoHeight
+            rows={buddies}
+            columns={columns}
+            pageSize={pageSize}
+            disableSelectionOnClick
+            getRowId={(row) => row[UserFields.FirebaseUID]}
+            rowsPerPageOptions={[7, 10, 25, 50]}
 
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-        />
-      </Card>
-    </React.Fragment>
+            initialState={{
+              sorting: {
+                sortModel: [{ field: UserFields.RegistrationDate, sort: 'desc' as GridSortDirection }],
+              },
+            }}
+
+            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+          />
+        </Card>
+      </Grid>
+    </Grid>
   )
 }
 

@@ -20,6 +20,8 @@ export enum UserFields {
   IsIdentityValidated = 'isIdentityValidated',
   IsApprovedBuddy = 'isApprovedBuddy',
   IsApplicationToBeBuddyUnderReview = 'isApplicationToBeBuddyUnderReview',
+
+  WalletId = 'walletId'
 }
 
 export interface User {
@@ -33,6 +35,7 @@ export interface User {
   [UserFields.IsIdentityValidated]: boolean,
   [UserFields.IsApprovedBuddy]: boolean,
   [UserFields.IsApplicationToBeBuddyUnderReview]: boolean,
+  [UserFields.WalletId]?: string,
 }
 
 export enum UserPersonalDataFields {

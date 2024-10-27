@@ -1,19 +1,21 @@
 import CustomAvatar from "../../@core/components/mui/avatar";
 import CustomChip from "../../@core/components/mui/chip";
-import {Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Typography} from "@mui/material";
+import {Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
 import Icon from "../../@core/components/icon";
 import UserAvatar from "./UserAvatar";
-import { UserFields, UserPersonalDataFields} from "../../types/user";
+import {UserFields, UserPersonalDataFields} from "../../types/user";
 import {getFullNameUser} from "../../utils/userUtils";
 import {Skeleton} from "@mui/lab";
 import {DateFormatter} from "src/utils/dateFormatter";
 import {useRouter} from "next/router";
 import {useContext} from "react";
 import {UserProfilePageContext} from "../../context/UserProfilePageContext";
+import {NumberFormatter} from "../../utils/numberFormatter";
+import {WalletFields} from "../../types/payments";
 
 const UserDetailCard = () => {
   const router = useRouter();
-  const { user } = useContext(UserProfilePageContext)
+  const { user, connections, wallet } = useContext(UserProfilePageContext)
 
   const onNavigateBack = () => router.back();
 
@@ -30,9 +32,20 @@ const UserDetailCard = () => {
 
         <UserAvatar user={user} />
 
-        <Typography variant='h6' sx={{ mb: 4 }}>
-          {getFullNameUser(user)}
-        </Typography>
+        <Stack direction={'row'} spacing={2} sx={{ mb: 4 }} alignItems={'center'}>
+          <Typography variant='h6'>
+            {getFullNameUser(user)}
+          </Typography>
+
+          {
+            user?.[UserFields.IsApprovedBuddy] &&
+              <Icon icon={"mdi:check-decagram"}
+                    fontSize={'1rem'}
+                    style={{ color: 'blue !important' }}
+              />
+          }
+        </Stack>
+
         <CustomChip
           skin='light'
           size='small'
@@ -46,20 +59,32 @@ const UserDetailCard = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Box sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
             <CustomAvatar skin='light' variant='rounded' sx={{ mr: 4, width: 44, height: 44 }}>
-              <Icon icon='mdi:check' />
+              <Icon icon='mdi:wallet-bifold' />
             </CustomAvatar>
             <div>
-              <Typography variant='h6'>1.23k</Typography>
-              <Typography variant='body2'>Task Done</Typography>
+              {
+                wallet ?
+                  <Typography variant='h6'>
+                    {NumberFormatter.priceToStringCurrency(wallet[WalletFields.Total])}
+                  </Typography>
+                  :
+                  <Skeleton variant={'text'} width={'50%'} />
+              }
+              <Typography variant='body2'>Ganancia total</Typography>
             </div>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CustomAvatar skin='light' variant='rounded' sx={{ mr: 4, width: 44, height: 44 }}>
-              <Icon icon='mdi:star-outline' />
+              <Icon icon='mdi:connection' />
             </CustomAvatar>
             <div>
-              <Typography variant='h6'>568</Typography>
-              <Typography variant='body2'>Project Done</Typography>
+              {
+                connections ?
+                  <Typography variant='h6'>{connections.length}</Typography>
+                  :
+                  <Skeleton variant={'text'} width={'50%'} />
+              }
+              <Typography variant='body2'>Conexiones</Typography>
             </div>
           </Box>
         </Box>

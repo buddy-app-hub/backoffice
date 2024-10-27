@@ -55,7 +55,7 @@ export enum TransactionFields {
 
 export interface Transaction {
   [TransactionFields.PaymentId]: string,
-  [TransactionFields.Type]: string,
+  [TransactionFields.Type]: TransactionTypes,
   [TransactionFields.Status]: TransactionStatus,
   [TransactionFields.Description]: string,
   [TransactionFields.Amount]: number,

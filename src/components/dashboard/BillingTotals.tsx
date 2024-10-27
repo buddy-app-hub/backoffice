@@ -45,7 +45,7 @@ const BillingTotals = () => {
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
       <CardContent>
-        <Typography sx={{ mb: 6.5, fontWeight: 600 }}>Facturación</Typography>
+        <Typography sx={{ mb: 6.5, fontWeight: 600 }}>Ganancia Total</Typography>
 
         {
           totalProfit ?
