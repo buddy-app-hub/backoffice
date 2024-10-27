@@ -53,6 +53,7 @@ const BuddyProfilePage = () => {
     if (id && !Array.isArray(id)) {
       ApiUser.getBuddyById(id)
         .then(setBuddy)
+        .catch(() => router.push('/404'))
     }
   }
 

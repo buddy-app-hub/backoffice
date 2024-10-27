@@ -1,12 +1,35 @@
-import {useRouter} from "next/router";
-import Spinner from "../@core/components/spinner";
+import {Grid, Stack} from "@mui/material";
+import UsersTotalQuantity from "../components/dashboard/UsersTotalQuantity";
+import BillingTotals from "../components/dashboard/BillingTotals";
+import ConnectionsTotals from "../components/dashboard/ConnectionsTotals";
+import LastRegisteredUsers from "../components/dashboard/LastRegisteredUsers";
+import {tokenStorage} from "../utils/tokenStorage";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Home = () => {
-  const router = useRouter();
 
-  router.push('/dashboards')
+  if (!tokenStorage.get())
+    return <CircularProgress />
 
-  return <Spinner />
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={4}>
+        <Stack spacing={5}>
+          <UsersTotalQuantity />
+
+          <BillingTotals />
+        </Stack>
+      </Grid>
+
+      <Grid item xs={12} md={8}>
+        <Stack spacing={5}>
+          <ConnectionsTotals />
+
+          <LastRegisteredUsers />
+        </Stack>
+      </Grid>
+    </Grid>
+  )
 }
 
 export default Home

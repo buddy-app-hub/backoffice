@@ -15,7 +15,8 @@ import {RequiredMailSchema, RequiredSchema} from "../../utils/validationSchemas"
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import {useRouter} from "next/router";
-import NProgress from "nprogress";
+import {tokenStorage} from "../../utils/tokenStorage";
+import {useSessionUser} from "../../hooks/useSessionUser";
 
 const invalidCredentialMessages = ['auth/invalid-email', 'auth/invalid-credential', 'auth/missing-password', 'auth/user-not-found'];
 
@@ -26,6 +27,7 @@ const loginFormSchema = yup.object().shape({
 
 const LoginPage = () => {
   const router = useRouter();
+  const { signOutUser } = useSessionUser();
 
   const methods = useForm<LoginParams>({
     resolver: yupResolver(loginFormSchema)
@@ -44,7 +46,7 @@ const LoginPage = () => {
     setPersistence(auth, browserLocalPersistence)
       .then(async () => {
         const userCredential = await signInWithEmailAndPassword(auth, data[LoginParamsFields.Mail], data[LoginParamsFields.Password]);
-        router.push('/dashboards');
+        router.push('/');
 
         return userCredential;
       })
@@ -63,6 +65,13 @@ const LoginPage = () => {
       })
       .finally(() => setLoading(false));
   }
+
+  useEffect(() => {
+    if (tokenStorage.get()) {
+      tokenStorage.remove();
+      signOutUser();
+    }
+  }, []);
 
   return (
     <Box className='content-center'>
@@ -117,7 +126,5 @@ const LoginPage = () => {
 }
 
 LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
-
-LoginPage.guestGuard = true
 
 export default LoginPage

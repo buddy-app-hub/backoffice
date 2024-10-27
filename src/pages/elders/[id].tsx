@@ -1,17 +1,13 @@
 import {useRouter} from "next/router";
 import Grid from "@mui/material/Grid";
-import UserDetailCard from "../../components/user/UserDetailCard";
+import UserDetailCard from "src/components/user/UserDetailCard";
 import {useEffect, useState} from "react";
-import {User, UserFields} from "../../types/user";
-import {ApiUser} from "../../services/userApi";
-import {ApiConnection} from "../../services/connectionApi";
-import {UserProfilePageContext} from "../../context/UserProfilePageContext";
+import {User} from "src/types/user";
+import {ApiUser} from "src/services/userApi";
+import {ApiConnection} from "src/services/connectionApi";
+import {UserProfilePageContext} from "src/context/UserProfilePageContext";
 import {Connection, ConnectionFields, Meeting} from "src/types/connections";
-import UserConnectionsTotals from "../../components/user/UserConnectionsTotals";
-import {WalletSummary} from "../../types/payments";
-import {ApiPayments} from "../../services/paymentApi";
-import UserWalletDetail from "../../components/user/UserWalletDetail";
-import UserProfitPerMonths from "../../components/user/UserProfitPerMonths";
+import UserConnectionsTotals from "src/components/user/UserConnectionsTotals";
 
 const ElderProfilePage = () => {
   const router = useRouter();
@@ -44,6 +40,7 @@ const ElderProfilePage = () => {
     if (id && !Array.isArray(id)) {
       ApiUser.getElderById(id)
         .then(setElder)
+        .catch(() => router.push('/404'))
     }
   }
 
