@@ -50,7 +50,7 @@ const UserDetailCard = () => {
           skin='light'
           size='small'
           label={user?.[UserFields.UserType]}
-          color={'primary'}
+          color={'secondary'}
           sx={{ textTransform: 'capitalize' }}
         />
       </CardContent>
@@ -91,8 +91,14 @@ const UserDetailCard = () => {
       </CardContent>
 
       <CardContent>
-        <Typography variant='h6'>Detalle</Typography>
-        <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
+        <Stack direction={'row'} justifyContent={'space-between'}>
+          <Typography variant='h6'>Detalle</Typography>
+
+          <Button size={'small'}>
+            Ver identidad
+          </Button>
+        </Stack>
+        <Divider sx={{ mt: theme => `${theme.spacing(2)} !important`, mb: theme => `${theme.spacing(4)} !important` }} />
         <Box sx={{ pb: 1 }}>
           <DataValueProfile label={'ID'}
                             value={user?.[UserFields.FirebaseUID]}
@@ -120,14 +126,40 @@ const UserDetailCard = () => {
         </Box>
       </CardContent>
 
-      <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Button variant='contained' sx={{ mr: 2 }}>
-          Edit
-        </Button>
-        <Button color='error' variant='outlined'>
-          Suspend
-        </Button>
-      </CardActions>
+      <CardContent sx={{ marginTop: 2 }}>
+        <Stack spacing={2}>
+          <Typography variant='body2' color={'text'} fontWeight={500}>Condición de Buddy</Typography>
+
+          <Stack width={'100%'} alignItems={'center'}>
+            {
+              user ?
+                user[UserFields.IsApprovedBuddy] ?
+                  <CustomChip skin='light'
+                              size='medium'
+                              label={"Aprobado"}
+                              color={'success'}
+                              onClick={() => alert('Va')}
+                  />
+                  :
+                  user[UserFields.IsApplicationToBeBuddyUnderReview] ?
+                    <CustomChip skin='light'
+                                size='medium'
+                                label={"Pendiente de aprobación"}
+                                color={'warning'}
+                                onClick={() => alert('Va')}
+                    />
+                    :
+                    <CustomChip skin='light'
+                                size='medium'
+                                label={"En proceso de registración"}
+                                color={'primary'}
+                    />
+                :
+                <Skeleton />
+            }
+          </Stack>
+        </Stack>
+      </CardContent>
     </Card>
   )
 }

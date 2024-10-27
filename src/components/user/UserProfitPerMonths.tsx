@@ -48,7 +48,9 @@ const UserProfitPerMonths = () => {
     const approveTransactions = transactions.filter(x => x[TransactionFields.Status] === TransactionStatus.Approved);
 
     if (!approveTransactions.length) {
-      setData({ empty: true, series: [], options: {} })
+      setData({ empty: true, series: [], options: {} });
+
+      return;
     }
 
     const totalsByMonth = lastFourMonths.reduce((acc, month) => {
@@ -100,58 +102,62 @@ const UserProfitPerMonths = () => {
                 <Skeleton />
                 :
                 data.empty ?
-                  <Alert>
-                    El usuario no tiene transacciones aprobadas
-                  </Alert>
+                  <Box mt={5}>
+                    <Alert color={'info'} severity={'info'}>
+                      El usuario no tiene transacciones aprobadas
+                    </Alert>
+                  </Box>
                   :
                   <ReactApexcharts type='bar' height={282} series={data.series} options={data.options} />
             }
           </CardContent>
         </Grid>
-        <Grid item xs={12}>
-          <CardHeader
-            title=''
-            subheader='Totales'
-            subheaderTypographyProps={{ sx: { lineHeight: '1.25rem', fontSize: '0.875rem !important' } }}
-            titleTypographyProps={{
-              sx: {
-                fontSize: '1.5rem !important',
-                lineHeight: '2rem !important',
-                letterSpacing: '0.43px !important'
-              }
-            }}
-          />
-          <CardContent
-            sx={{ pt: theme => `${theme.spacing(4)} !important`, pb: theme => `${theme.spacing(5.5)} !important` }}
-          >
-            <Stack direction={'row'} spacing={1} justifyContent={'space-between'}>
-              {
-                data && !data.empty && data.series &&
-                data.series.map((s, i) => (
-                  <Box key={`dataUserProfitPerMonths_${i}`} sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
-                    <CustomAvatar skin='light'
-                                  variant='rounded'
-                                  sx={{mr: 4,
-                                    width: 30,
-                                    height: 30,
-                                    color: s.color,
-                                    backgroundColor: s.bgColor,
-                    }}
-                    >
-                      <Icon icon={`mdi:${i === 0 ? "hand-coin" : "arrow-up-bold-circle-outline"}`} />
-                    </CustomAvatar>
-                    <div>
-                      <Typography variant='body1'>
-                        {NumberFormatter.toStringCurrency("ARS", s.data.reduce((ac, r) => r + ac, 0))}
-                      </Typography>
-                      <Typography variant='body2'>{s.name}</Typography>
-                    </div>
-                  </Box>
-                ))
-              }
-            </Stack>
-          </CardContent>
-        </Grid>
+        {
+          data && !data.empty && data.series &&
+          <Grid item xs={12}>
+            <CardHeader
+              title=''
+              subheader='Totales'
+              subheaderTypographyProps={{ sx: { lineHeight: '1.25rem', fontSize: '0.875rem !important' } }}
+              titleTypographyProps={{
+                sx: {
+                  fontSize: '1.5rem !important',
+                  lineHeight: '2rem !important',
+                  letterSpacing: '0.43px !important'
+                }
+              }}
+            />
+            <CardContent
+              sx={{ pt: theme => `${theme.spacing(4)} !important`, pb: theme => `${theme.spacing(5.5)} !important` }}
+            >
+              <Stack direction={'row'} spacing={1} justifyContent={'space-between'}>
+                {
+                  data.series.map((s, i) => (
+                    <Box key={`dataUserProfitPerMonths_${i}`} sx={{ mr: 8, display: 'flex', alignItems: 'center' }}>
+                      <CustomAvatar skin='light'
+                                    variant='rounded'
+                                    sx={{mr: 4,
+                                      width: 30,
+                                      height: 30,
+                                      color: s.color,
+                                      backgroundColor: s.bgColor,
+                                    }}
+                      >
+                        <Icon icon={`mdi:${i === 0 ? "hand-coin" : "arrow-up-bold-circle-outline"}`} />
+                      </CustomAvatar>
+                      <div>
+                        <Typography variant='body1'>
+                          {NumberFormatter.toStringCurrency("ARS", s.data.reduce((ac, r) => r + ac, 0))}
+                        </Typography>
+                        <Typography variant='body2'>{s.name}</Typography>
+                      </div>
+                    </Box>
+                  ))
+                }
+              </Stack>
+            </CardContent>
+          </Grid>
+        }
       </Grid>
     </Card>
   )

@@ -22,6 +22,7 @@ const sortTransactionsByRegistrationDate = (a: Transaction, b: Transaction) => {
   if (a[TransactionFields.CreatedAt] && !b[TransactionFields.CreatedAt])
     return 1;
 
+  // @ts-ignore
   return a[TransactionFields.CreatedAt] > b[TransactionFields.CreatedAt] ? -1 : 1;
 }
 
@@ -149,6 +150,7 @@ const TransactionsComponent = ({transaction}: TransactionsComponentProps) => {
       fontStyle = 'italic'
     }
 
+    //@ts-ignore
     return (
       <Typography variant={'body2'}
                   color={color}
