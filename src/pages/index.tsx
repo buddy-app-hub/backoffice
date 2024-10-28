@@ -1,53 +1,35 @@
-import React, {useEffect, useState} from 'react';
-import {useRouter} from "next/router";
-import Home from "@/pages/Home";
-import {auth} from "@/utils/firebase";
-import { onAuthStateChanged } from 'firebase/auth';
-import FullScreenLoader from "@/components/FullScreenLoader";
-import {tokenStorage} from "@/utils/tokenStorage";
-import AppBar from "@/components/layout/AppBar";
+import {Grid, Stack} from "@mui/material";
+import UsersTotalQuantity from "../components/dashboard/UsersTotalQuantity";
+import BillingTotals from "../components/dashboard/BillingTotals";
+import ConnectionsTotals from "../components/dashboard/ConnectionsTotals";
+import LastRegisteredUsers from "../components/dashboard/LastRegisteredUsers";
+import {tokenStorage} from "../utils/tokenStorage";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const Index: React.FC = () => {
-    const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(true);
+const Home = () => {
 
-    const goToLogin = () => {
-        tokenStorage.remove();
-        router.push('/login');
-    }
+  if (!tokenStorage.get())
+    return <CircularProgress />
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                goToLogin();
-            } else {
-                user.getIdToken()
-                    .then(token => {
-                        if (token) {
-                            tokenStorage.save(token);
-                            setLoading(false);
-                        }
-                    })
-                    .catch(goToLogin)
-            }
-        });
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={4}>
+        <Stack spacing={5}>
+          <UsersTotalQuantity />
 
-        return () => unsubscribe();
-    }, [auth, router]);
+          <BillingTotals />
+        </Stack>
+      </Grid>
 
-    if (loading) {
-        return <FullScreenLoader />; // Mostrar un mensaje de carga mientras verificamos el estado
-    }
+      <Grid item xs={12} md={8}>
+        <Stack spacing={5}>
+          <ConnectionsTotals />
 
-    return (
-        <div>
-            <AppBar />
+          <LastRegisteredUsers />
+        </Stack>
+      </Grid>
+    </Grid>
+  )
+}
 
-            <div className="container mx-auto p-4 pt-20">
-                <Home />
-            </div>
-        </div>
-    );
-};
-
-export default Index;
+export default Home

@@ -1,147 +1,120 @@
-import {User, UserFields, UserPersonalDataFields} from "@/types/User";
+import {User, UserFields, UserPersonalDataFields} from "../../types/user";
 import {useEffect, useState} from "react";
-import {FirebaseMediaService} from "@/services/firebaseMediaService";
-import {Dialog} from "@/components/layout/Dialog";
+import Dialog from "@mui/material/Dialog";
+import BaseDialogTitle from "../BaseDialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import {Grid, Stack, Typography} from "@mui/material";
+import {FirebaseMediaService} from "../../services/firebaseMediaService";
+import IdentityMediaComponent from "./IdentityMediaComponent";
 
 interface UserIdentityDialogProps {
-    user?: User,
-    onClose: () => void,
+  open: boolean,
+  user?: User,
+  onClose: () => void,
 }
 
 interface IdentityMediaType {
-    front?: string,
-    back?: string,
-    selfie?: string
+  front?: string,
+  back?: string,
+  selfie?: string
 }
 
-export function UserIdentityDialog({ user, onClose }: UserIdentityDialogProps) {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [dataMedia, setDataMedia] = useState<IdentityMediaType>({});
+const UserIdentityDialog = ({open, user, onClose}: UserIdentityDialogProps) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataMedia, setDataMedia] = useState<IdentityMediaType>({});
 
-    const nameBuddy = user ? `${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName]} ${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.LastName]}` : ''
+  const nameBuddy = user ? `${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName]} ${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.LastName]}` : ''
 
-    const dialogActions =
-        <button type="button"
-                onClick={onClose}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
-            Cerrar
-        </button>;
+  const searchIdentityMedia = (id: string) => {
+    setLoading(true);
+    setDataMedia({});
 
-    const searchIdentityMedia = (id: string) => {
-        setLoading(true);
-        setDataMedia({});
+    FirebaseMediaService.getUserIdentityMedia(id)
+      .then(response => {
+        const media : IdentityMediaType = {};
 
-        FirebaseMediaService.getUserIdentityMedia(id)
-            .then(response => {
-                const media : IdentityMediaType = {};
+        response.forEach(urlPhoto => {
+          if (urlPhoto.includes("front_id")) {
+            media.front = urlPhoto
+          }
+          else if (urlPhoto.includes("back_id")) {
+            media.back = urlPhoto
+          }
+          else if (urlPhoto.includes("selfie")) {
+            media.selfie = urlPhoto
+          }
+        });
 
-                response.forEach(urlPhoto => {
-                    if (urlPhoto.includes("front_id")) {
-                        media.front = urlPhoto
-                    }
-                    else if (urlPhoto.includes("back_id")) {
-                        media.back = urlPhoto
-                    }
-                    else if (urlPhoto.includes("selfie")) {
-                        media.selfie = urlPhoto
-                    }
-                });
+        setDataMedia(media)
+      })
+      .finally(() => setLoading(false));
+  }
 
-                setDataMedia(media)
-            })
-            .finally(() => setLoading(false));
-    }
+  useEffect(() => {
+    setDataMedia({});
+    if (open && user)
+      searchIdentityMedia(user[UserFields.FirebaseUID]);
+  }, [open, user]);
 
-    useEffect(() => {
-        setDataMedia({});
-        if (user)
-            searchIdentityMedia(user[UserFields.FirebaseUID]);
-    }, [user]);
+  return (
+    <Dialog open={open}
+            title={""}
+            onClose={onClose}
+            maxWidth={'sm'}
+            fullWidth
+    >
+      <BaseDialogTitle title={"Identidad del usuario"} onClose={onClose} />
 
-    return (
-        <Dialog open={!!user}
-                title={"Datos de la Identidad"}
-                action={dialogActions}
-                onClose={onClose}
-        >
-            <div className={"grid gap-5"}>
-                <div className="grid grid-cols-12 gap-2">
-                    <div className={"col-span-6 grid gap-1"}>
-                        <p className={"italic text-gray-500"} style={{ fontSize: '12px' }}>Nombre</p>
-                        <p className={"font-semibold"} style={{ fontSize: '18px' }}>{nameBuddy}</p>
-                    </div>
+      <DialogContent>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Stack spacing={0}>
+              <Typography variant={'body2'}>
+                Nombre
+              </Typography>
+              <Typography variant={'body1'} fontWeight={500}>
+                {nameBuddy}
+              </Typography>
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Stack spacing={0}>
+              <Typography variant={'body2'}>
+                Mail
+              </Typography>
+              <Typography variant={'body1'} fontWeight={500}>
+                {user?.[UserFields.Email]}
+              </Typography>
+            </Stack>
+          </Grid>
 
-                    <div className={"col-span-6 grid gap-1"}>
-                        <p className={"italic text-gray-500"} style={{ fontSize: '12px' }}>Email</p>
-                        <p className={"font-semibold"} style={{ textTransform: 'none', fontSize: '18px' }}>
-                            {user?.[UserFields.Email]}
-                        </p>
-                    </div>
-                </div>
-            </div>
+          <Grid item xs={12}>
+            <Typography variant={'body2'}>
+              Documentación
+            </Typography>
 
-            <div className={"grid gap-5 mt-5"}>
-                <p className={"italic text-gray-500"} style={{ fontSize: '12px' }}>Documentación</p>
+            <Stack spacing={4}>
+              <IdentityMediaComponent label={"Frente DNI"}
+                                      loading={loading}
+                                      media={dataMedia?.front}
+              />
 
-                <IdentityMediaComponent label={"Frente DNI"}
-                                        loading={loading}
-                                        media={dataMedia?.front}
-                />
+              <IdentityMediaComponent label={"Dorso DNI"}
+                                      loading={loading}
+                                      media={dataMedia?.back}
+              />
 
-                <IdentityMediaComponent label={"Dorso DNI"}
-                                        loading={loading}
-                                        media={dataMedia?.back}
-                />
+              <IdentityMediaComponent label={"Prueba de Vida"}
+                                      loading={loading}
+                                      media={dataMedia?.selfie}
+              />
+            </Stack>
+          </Grid>
 
-                <IdentityMediaComponent label={"Prueba de Vida"}
-                                        loading={loading}
-                                        media={dataMedia?.selfie}
-                />
-            </div>
-        </Dialog>
-    )
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  )
 }
 
-interface IdentityMediaComponentProps {
-    label: string,
-    loading: boolean,
-    media?: string
-}
-
-function IdentityMediaComponent({ label, media, loading}: IdentityMediaComponentProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const imgStyle = { borderRadius: '4px' };
-
-    return (
-        <div className="flex flex-row justify-between bg-gray-100 p-4 items-center" style={{ borderRadius: '16px' }}>
-            <span className="font-semibold" style={{ fontSize: '16px' }} >{label}</span>
-
-            {
-                loading ?
-                    <div className="w-[60px] h-[60px] bg-gray-300 animate-pulse" style={imgStyle}></div>
-                    :
-                    media ?
-                        <img src={media} height={60} width={60}
-                             alt={`${label.replace(/ /g, "")}`}
-                             className={"hover:cursor-pointer"}
-                             style={imgStyle}
-                             onClick={() => setIsOpen(true)} />
-                        :
-                        <p className={"italic text-gray-500"} style={{ fontSize: '12px' }}>Pendiente de carga</p>
-            }
-
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                    onClick={() => setIsOpen(false)}
-                >
-                    <img
-                        src={media}
-                        alt={`${label.replace(/ /g, "")}_zoom`}
-                        className="w-2/3 h-auto max-h-screen"
-                    />
-                </div>
-            )}
-        </div>
-    )
-}
+export default UserIdentityDialog;
