@@ -1,42 +1,131 @@
+import {useEffect, useState} from 'react'
+
+import Head from 'next/head'
+import {Router, useRouter} from 'next/router'
+import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
-import React, {useState} from 'react'
-import "../styles/globals.css";
-import Head from "next/head";
-import FullScreenLoader from "@/components/FullScreenLoader";
+import { store } from 'src/store'
+import { Provider } from 'react-redux'
+import NProgress from 'nprogress'
+import { CacheProvider } from '@emotion/react'
+import type { EmotionCache } from '@emotion/cache'
+import themeConfig from 'src/configs/themeConfig'
+import { Toaster } from 'react-hot-toast'
+import UserLayout from 'src/layouts/UserLayout'
+import ThemeComponent from 'src/@core/theme/ThemeComponent'
+import Spinner from 'src/@core/components/spinner'
+import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
+import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
+import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
+import 'prismjs'
+import 'prismjs/themes/prism-tomorrow.css'
+import 'prismjs/components/prism-jsx'
+import 'prismjs/components/prism-tsx'
 
-export const LoaderContext = React.createContext({
-    loading: false,
-    showLoader: () => { },
-    hideLoader: () => { },
-})
+import 'react-perfect-scrollbar/dist/css/styles.css'
+import 'src/iconify-bundle/icons-bundle-react'
+import '../../styles/globals.css'
+import { tokenStorage } from 'src/utils/tokenStorage'
+import { onAuthStateChanged } from '@firebase/auth'
+import { auth } from 'src/utils/firebase'
 
-export default function App({ Component, pageProps }: AppProps) {
-    const [loading, setLoading] = useState<boolean>(false);
+type ExtendedAppProps = AppProps & {
+  Component: NextPage
+  emotionCache: EmotionCache
+}
 
-    const showLoader = () => setLoading(true);
+const clientSideEmotionCache = createEmotionCache()
 
-    const hideLoader = () => setLoading(false);
+// ** Pace Loader
+if (themeConfig.routingLoader) {
+  Router.events.on('routeChangeStart', () => {
+    NProgress.start()
+  })
+  Router.events.on('routeChangeError', () => {
+    NProgress.done()
+  })
+  Router.events.on('routeChangeComplete', () => {
+    NProgress.done()
+  })
+}
+
+// ** Configure JSS & ClassName
+const App = (props: ExtendedAppProps) => {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+
+  // Variables
+  const contentHeightFixed = Component.contentHeightFixed ?? false
+  const getLayout =
+    Component.getLayout ?? (page => <UserLayout contentHeightFixed={contentHeightFixed}>{page}</UserLayout>)
+
+  const setConfig = Component.setConfig ?? undefined
+
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const goToLogin = () => {
+    tokenStorage.remove();
+    router.push('/login');
+  }
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        if (router.asPath && !router.asPath.startsWith('/login'))
+          goToLogin();
+        setLoading(false);
+      } else {
+        setLoading(true);
+        user.getIdToken()
+          .then(token => {
+            if (token)
+              tokenStorage.save(token);
+            else
+              goToLogin();
+          })
+          .catch(goToLogin)
+          .finally(() => setLoading(false))
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
+
+  if (loading)
+    return <Spinner />
 
   return (
-      <>
+    <Provider store={store}>
+      <CacheProvider value={emotionCache}>
         <Head>
-          <title>Buddy Backoffice</title>
-          <meta name="description" content="Backoffice web de Buddy" />
-          <link rel="icon" href="/buddy_logo.svg" />
-
-            <script
-                type="module"
-                src="node_modules/@material-tailwind/html@latest/scripts/tooltip.js"
-                async
-            ></script>
+          <title>{`${themeConfig.templateName} Backoffice`}</title>
+          <meta
+            name='description'
+            content={`Backoffice web de ${themeConfig.templateName}`}
+          />
+          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+          <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 
-          <LoaderContext.Provider value={{ loading, showLoader, hideLoader }}>
-              <Component {...pageProps} />
-          </LoaderContext.Provider>
-
-          { loading && <FullScreenLoader /> }
-
-      </>
-  );
+        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+          <SettingsConsumer>
+            {({ settings }) => {
+              return (
+                <ThemeComponent settings={settings}>
+                  {/*<Guard authGuard={authGuard} guestGuard={guestGuard}>*/}
+                    {getLayout(<Component {...pageProps} />)}
+                  {/*</Guard>*/}
+                  <ReactHotToast>
+                    <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                  </ReactHotToast>
+                </ThemeComponent>
+              )
+            }}
+          </SettingsConsumer>
+        </SettingsProvider>
+      </CacheProvider>
+    </Provider>
+  )
 }
+
+export default App
