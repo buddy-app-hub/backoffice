@@ -1,14 +1,14 @@
-import {User, UserFields} from "../../types/user";
+import React, {useEffect, useState} from "react";
+import dynamic from 'next/dynamic';
 import {ApexOptions} from "apexcharts";
 import {hexToRGBA} from "../../@core/utils/hex-to-rgba";
 import {Box, Card, Divider, Stack, Typography} from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
-import React, {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import Icon from "../../@core/components/icon";
 import CustomAvatar from "../../@core/components/mui/avatar";
-import dynamic from 'next/dynamic';
+import {User, UserFields} from "src/types/user";
 
 const ReactApexcharts = dynamic(() => import('src/@core/components/react-apexcharts'), { ssr: false })
 
