@@ -7,8 +7,11 @@ import Grid from "@mui/material/Grid";
 import React, {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import Icon from "../../@core/components/icon";
-import ReactApexcharts from "../../@core/components/react-apexcharts";
 import CustomAvatar from "../../@core/components/mui/avatar";
+import dynamic from 'next/dynamic';
+
+const ReactApexcharts = dynamic(() => import('src/@core/components/react-apexcharts'), { ssr: false })
+
 
 interface BuddiesTotalsProps {
   buddies?: User[]

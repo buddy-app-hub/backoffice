@@ -7,8 +7,37 @@ import Grid from "@mui/material/Grid";
 import React, {useEffect, useState} from "react";
 import {useTheme} from "@mui/material/styles";
 import Icon from "../../@core/components/icon";
-import ReactApexcharts from "../../@core/components/react-apexcharts";
 import CustomAvatar from "../../@core/components/mui/avatar";
+import dynamic from 'next/dynamic';
+
+const ReactApexcharts = dynamic(() => import('src/@core/components/react-apexcharts'), { ssr: false })
+
+const chartDataDefault: ApexOptions = {
+  chart: {
+    sparkline: { enabled: true }
+  },
+  colors: [],
+  stroke: { width: 0 },
+  legend: { show: false },
+  dataLabels: { enabled: false },
+  labels: ['Con identidad verificada', 'No verificaron identidad'],
+  states: {
+    hover: {
+      filter: { type: 'none' }
+    },
+    active: {
+      filter: { type: 'none' }
+    }
+  },
+  plotOptions: {
+    pie: {
+      customScale: 0.9,
+      donut: {
+        size: '70%'
+        }
+      }
+    }
+  };
 
 interface EldersTotalsProps {
   elders?: User[]
@@ -36,7 +65,7 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
 
   const calculateTotals = (users: User[]) => {
     if (!users.length) {
-      setTotals({ empty: true, type: {} as EldersTotalsTypes, options: {} })
+      setTotals({ empty: true, type: {} as EldersTotalsTypes, options: chartDataDefault })
       return;
     }
 

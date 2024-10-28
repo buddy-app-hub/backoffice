@@ -1,21 +1,10 @@
-// ** Next Import
 import Link from 'next/link'
-
-// ** MUI Imports
 import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
-import { styled, useTheme } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
-
-// ** Type Import
+import { styled } from '@mui/material/styles'
 import { LayoutProps } from 'src/@core/layouts/types'
-
-// ** Custom Icon Import
 import Icon from 'src/@core/components/icon'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
-import BuddyLogo from "../../../../../components/BuddyLogo";
+import BuddyLogo from "src/components/BuddyLogo";
 
 interface Props {
   navHover: boolean
@@ -38,14 +27,6 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   paddingRight: theme.spacing(4.5),
   transition: 'padding .25s ease-in-out',
   minHeight: theme.mixins.toolbar.minHeight
-}))
-
-const HeaderTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
-  fontWeight: 600,
-  lineHeight: 'normal',
-  textTransform: 'uppercase',
-  color: theme.palette.text.primary,
-  transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
 }))
 
 const LinkStyled = styled(Link)({
@@ -71,8 +52,6 @@ const VerticalNavHeader = (props: Props) => {
     menuUnlockedIcon: userMenuUnlockedIcon
   } = props
 
-  // ** Hooks & Vars
-  const theme = useTheme()
   const { navCollapsed } = settings
 
   const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }

@@ -13,7 +13,7 @@ const nextConfig = {
       },
       {
         source: '/payments-api/:path*',
-        destination: `https://payments.buddyapp.link/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_PAYMENT_API_URL}/:path*`,
       },
     ];
   },
@@ -21,6 +21,7 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
+      fallback: false,
       apexcharts: path.resolve('./node_modules/apexcharts-clevision'),
     };
 

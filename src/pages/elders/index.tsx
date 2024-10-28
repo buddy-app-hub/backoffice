@@ -2,19 +2,20 @@ import {Card, CardHeader, Grid, IconButton} from "@mui/material";
 import {DataGrid, GridColDef, GridRenderCellParams, GridSortDirection} from "@mui/x-data-grid";
 import {useEffect, useState} from "react";
 import {User, UserFields} from "src/types/user";
-import {ApiUser} from "../../services/userApi";
+import {ApiUser} from "src/services/userApi";
 import React from 'react';
-import {router} from "next/client";
-import Icon from "../../@core/components/icon";
+import Icon from "src/@core/components/icon";
 import {
   columnEmail,
   columnGenre,
   columnName,
   columnRegistrationDate
 } from "src/components/user/usersTableColumns";
-import EldersTotals from "../../components/elders/EldersTotals";
+import EldersTotals from "src/components/elders/EldersTotals";
+import {useRouter} from "next/router";
 
 const Elders = () => {
+  const router = useRouter();
   const [pageSize, setPageSize] = useState<number>(10);
   const [elders, setElders] = useState<User[]>([]);
 

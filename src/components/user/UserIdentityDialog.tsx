@@ -3,8 +3,7 @@ import {useEffect, useState} from "react";
 import Dialog from "@mui/material/Dialog";
 import BaseDialogTitle from "../BaseDialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {Box, Grid, Stack, Typography} from "@mui/material";
-import ButtonGroupAccept from "../ButtonGroupAccept";
+import {Grid, Stack, Typography} from "@mui/material";
 import {FirebaseMediaService} from "../../services/firebaseMediaService";
 import IdentityMediaComponent from "./IdentityMediaComponent";
 

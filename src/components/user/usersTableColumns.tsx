@@ -5,8 +5,6 @@ import {DateFormatter} from "../../utils/dateFormatter";
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "../../@core/components/icon";
 import React from "react";
-import {useTheme} from "@mui/material/styles";
-import {hexToRGBA} from "../../@core/utils/hex-to-rgba";
 
 export const columnName : GridColDef = {
   flex: 0.15,

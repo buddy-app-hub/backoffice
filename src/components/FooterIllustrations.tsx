@@ -1,11 +1,8 @@
-// ** React Imports
 import { ReactNode } from 'react'
-
-// ** MUI Components
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 
-interface FooterIllustrationsV2Prop {
+interface FooterIllustrationsProp {
   image?: ReactNode
 }
 
@@ -18,8 +15,8 @@ const MaskImg = styled('img')(() => ({
 }))
 
 const TreeImg = styled('img')(({ theme }) => ({
-  left: '2.125rem',
-  bottom: '2.688rem',
+  left: '2.25rem',
+  bottom: '4.25rem',
   position: 'absolute',
   [theme.breakpoints.down('lg')]: {
     left: 0,
@@ -27,7 +24,7 @@ const TreeImg = styled('img')(({ theme }) => ({
   }
 }))
 
-const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
+const FooterIllustrations = (props: FooterIllustrationsProp) => {
   // ** Props
   const { image } = props
 
@@ -40,8 +37,8 @@ const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
   if (!hidden) {
     return (
       <>
-        {image || <TreeImg alt='tree' src='/images/pages/tree.png' />}
-        <MaskImg alt='mask' src={`/images/pages/auth-v2-mask-${theme.palette.mode}.png`} />
+        {image || <TreeImg alt='tree' src='/images/pages/tree-2.png' />}
+        <MaskImg alt='mask' src={`/images/pages/misc-mask-${theme.palette.mode}.png`} />
       </>
     )
   } else {
@@ -49,4 +46,4 @@ const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
   }
 }
 
-export default FooterIllustrationsV2
+export default FooterIllustrations

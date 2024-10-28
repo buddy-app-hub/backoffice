@@ -1,20 +1,10 @@
-// ** React Imports
 import { ReactNode } from 'react'
-
-// ** MUI Imports
 import { Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-// ** Layout Imports
 // !Do not remove this Layout import
 import Layout from 'src/@core/layouts/Layout'
-
-// ** Navigation Imports
 import VerticalNavItems from 'src/navigation/vertical'
-
-// ** Component Import
-// Uncomment the below line (according to the layout type) when using server-side menu
-// import ServerSideVerticalNavItems from './components/vertical/ServerSideNavItems'
 
 import VerticalAppBarContent from './components/vertical/AppBarContent'
 

@@ -45,7 +45,6 @@ const getResponseBody = async (response: Response) => {
 const getError = async (error: any) => {
   if (error.status === 401) {
     await signOut(auth);
-    window.location.href = '/';
   }
   const errorData = "Failed to fetch";
 

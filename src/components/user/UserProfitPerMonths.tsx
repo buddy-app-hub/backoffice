@@ -1,6 +1,6 @@
 import {Box, Card, CardContent, CardHeader, Grid, Stack, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import dynamic from 'next/dynamic';
 import {useContext, useEffect, useState} from "react";
 import {UserProfilePageContext} from "../../context/UserProfilePageContext";
 import {Transaction, TransactionFields, TransactionStatus, TransactionTypes, WalletFields} from "../../types/payments";
@@ -11,6 +11,8 @@ import {hexToRGBA} from "../../@core/utils/hex-to-rgba";
 import CustomAvatar from "../../@core/components/mui/avatar";
 import Icon from "../../@core/components/icon";
 import {NumberFormatter} from "../../utils/numberFormatter";
+
+const ReactApexcharts = dynamic(() => import('src/@core/components/react-apexcharts'), { ssr: false })
 
 const getLastFourMonths = () => {
   const months: string[] = [];

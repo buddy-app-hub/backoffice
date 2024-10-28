@@ -1,6 +1,6 @@
 {
-  "name": "materio-mui-react-nextjs-admin-template",
-  "version": "2.1.0",
+  "name": "buddy-backoffice-web",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -51,6 +51,7 @@
     "i18next-http-backend": "2.1.1",
     "jsonwebtoken": "8.5.1",
     "keen-slider": "6.8.5",
+    "latest": "^0.2.0",
     "moment": "^2.30.1",
     "next": "13.1.6",
     "nprogress": "0.2.0",

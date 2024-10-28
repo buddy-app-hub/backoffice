@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {ApexOptions} from 'apexcharts'
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import {ApexOptions} from 'apexcharts';
+import dynamic from 'next/dynamic';
+
+const ReactApexcharts = dynamic(() => import('src/@core/components/react-apexcharts'), { ssr: false })
 
 import {Alert, Box, Card, CardContent, CardHeader, Divider, Grid, IconButton, Stack, Typography} from "@mui/material";
 import Icon from "src/@core/components/icon";

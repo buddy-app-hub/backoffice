@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 import {User, UserFields} from "src/types/user";
 import {ApiUser} from "../../services/userApi";
 import React from 'react';
-import {router} from "next/client";
 import Icon from "../../@core/components/icon";
 import {
   columnBuddyConfirmed,
@@ -14,8 +13,11 @@ import {
   columnRegistrationDate
 } from "src/components/user/usersTableColumns";
 import BuddiesTotals from "../../components/buddies/BuddiesTotals";
+import {useRouter} from "next/router";
 
 const Buddies = () => {
+  const router = useRouter();
+
   const [pageSize, setPageSize] = useState<number>(10);
   const [buddies, setBuddies] = useState<User[]>([]);
 
