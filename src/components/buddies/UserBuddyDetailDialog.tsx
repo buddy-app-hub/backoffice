@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
 import {User, UserFields, UserPersonalDataFields} from "src/types/user";
-import {ApiUser} from "../../services/userApi";
-import {FirebaseMediaService} from "../../services/firebaseMediaService";
+import {ApiUser} from "src/services/userApi";
+import {FirebaseMediaService} from "src/services/firebaseMediaService";
 import Dialog from "@mui/material/Dialog";
 import BaseDialogTitle from "../BaseDialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import {Box, Grid, Stack, Typography} from "@mui/material";
 import ButtonGroupAccept from "../ButtonGroupAccept";
+import {useAppGlobalData} from "src/context/AppDataContext";
 
 interface UserBuddyDetailDialogProps {
   open: boolean,
@@ -16,6 +17,7 @@ interface UserBuddyDetailDialogProps {
 }
 
 export function UserBuddyDetailDialog({ open, user, onClose, onSubmit }: UserBuddyDetailDialogProps) {
+  const { reloadBuddies } = useAppGlobalData();
   const [srcPresentation, setSrcPresentation] = useState<string>();
 
   const nameBuddy = user ? `${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName]} ${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.LastName]}` : ''
@@ -26,6 +28,7 @@ export function UserBuddyDetailDialog({ open, user, onClose, onSubmit }: UserBud
 
       promise(user[UserFields.FirebaseUID])
         .then(onSubmit)
+        .finally(reloadBuddies)
     }
   }
 

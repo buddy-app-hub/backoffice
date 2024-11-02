@@ -3,7 +3,7 @@ import CustomChip from "../../@core/components/mui/chip";
 import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
 import Icon from "../../@core/components/icon";
 import UserAvatar from "./UserAvatar";
-import {UserFields, UserPersonalDataFields} from "../../types/user";
+import {UserFields, UserPersonalDataFields, UserProfileFields} from "../../types/user";
 import {getFullNameUser} from "../../utils/userUtils";
 import {Skeleton} from "@mui/lab";
 import {DateFormatter} from "src/utils/dateFormatter";
@@ -51,17 +51,27 @@ const UserDetailCard = () => {
 
         <UserAvatar user={user} />
 
-        <Stack direction={'row'} spacing={2} sx={{ mb: 4 }} alignItems={'center'}>
+        <Stack direction={'row'} spacing={5} sx={{ mt: 1, mb: 3 }} alignItems={'center'}>
           <Typography variant='h6'>
             {getFullNameUser(user)}
           </Typography>
 
           {
-            user?.[UserFields.IsApprovedBuddy] &&
-              <Icon icon={"mdi:check-decagram"}
-                    fontSize={'1rem'}
-                    style={{ color: 'blue !important' }}
-              />
+            user ?
+              <Stack direction={'row'} spacing={1} alignItems={'initial'} sx={{ mt: '3px !important' }}>
+                <Icon icon='mdi:star' fontSize={'18px'} color={'rgba(255, 180, 0, 1)'} />
+
+                <Typography variant='caption' fontSize={'0.8rem'}>
+                  {
+                    isBuddy ?
+                      user[UserFields.BuddyProfile][UserProfileFields.GlobalRating].toLocaleString('en-EN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+                      :
+                      user[UserFields.ElderProfile][UserProfileFields.GlobalRating].toLocaleString('en-EN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+                  }
+                </Typography>
+              </Stack>
+              :
+              null
           }
         </Stack>
 
