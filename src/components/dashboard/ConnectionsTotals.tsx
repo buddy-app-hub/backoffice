@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Connection, ConnectionFields, MeetingFields, MeetingScheduleFields} from "src/types/connections";
-import {ApiConnection} from "src/services/connectionApi";
 import {Box, Card, CardHeader, Grid, IconButton, Typography} from "@mui/material";
 import Icon from "src/@core/components/icon";
 import {DateFormatter} from "src/utils/dateFormatter";
 import CardContent from "@mui/material/CardContent";
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import {ThemeColor} from "src/@core/layouts/types";
+import {useAppGlobalData} from "src/context/AppDataContext";
 
 interface MeetingsTotals {
   canceled: number,
@@ -16,6 +16,8 @@ interface MeetingsTotals {
 }
 
 const ConnectionsTotals = () => {
+  const { connections, reloadConnections, errorsConnections } = useAppGlobalData();
+
   const [totals, setTotals] = useState<{
     empty: boolean, connections: number, meetingTotals: MeetingsTotals
   }>();
@@ -66,18 +68,17 @@ const ConnectionsTotals = () => {
 
   const setErrorFetch = () => setError("Ocurrió un error al obtener las conexiones");
 
-  const loadConnections = () => {
+  useEffect(() => {
     setError(undefined);
     setTotals(undefined);
 
-    ApiConnection.getConnections()
-      .then(calculateTotals)
-      .catch(setErrorFetch)
-  }
+    if (connections) calculateTotals(connections)
+  }, [connections]);
 
   useEffect(() => {
-    loadConnections()
-  }, []);
+    setError(undefined);
+    if (errorsConnections) setErrorFetch();
+  }, [errorsConnections]);
 
   return (
     <Card>
@@ -96,7 +97,7 @@ const ConnectionsTotals = () => {
                     sx: {mb: 2.25, lineHeight: '2rem !important', letterSpacing: '0.15px !important'}
                   }}
                   action={
-                    <IconButton onClick={loadConnections}>
+                    <IconButton onClick={reloadConnections}>
                       <Icon icon='mdi:reload' />
                     </IconButton>
                   }

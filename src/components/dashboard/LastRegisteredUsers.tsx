@@ -1,17 +1,24 @@
 import React, {useEffect, useState} from "react";
 import {User, UserFields} from "src/types/user";
-import {ApiUser} from "src/services/userApi";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {columnEmail, columnGenre, columnName, columnRegistrationDate} from "../user/usersTableColumns";
-import {Card, CardHeader} from "@mui/material";
+import {Card, CardHeader, IconButton} from "@mui/material";
+import {useAppGlobalData} from "src/context/AppDataContext";
+import Icon from "src/@core/components/icon";
+
+const sortUserByRegistrationDate = (a: User, b: User) =>
+  a[UserFields.RegistrationDate] > b[UserFields.RegistrationDate] ? -1 : 1;
 
 const LastRegisteredUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const { allUsers, reloadAllUser } = useAppGlobalData();
+
+  const [users, setUsers] = useState<User[]>();
 
   useEffect(() => {
-    ApiUser.fetchUsers()
-      .then(response => setUsers(response.slice(0, 5)))
-  }, []);
+    setUsers(undefined)
+
+    if (allUsers) setUsers(allUsers.sort(sortUserByRegistrationDate).slice(0, 5));
+  }, [allUsers]);
 
   const columns: GridColDef[] = [
     columnName,
@@ -25,17 +32,24 @@ const LastRegisteredUsers = () => {
       <Card>
         <CardHeader
           title='Últimos 5 usuarios registrados'
+          action={
+            <IconButton onClick={reloadAllUser}>
+              <Icon icon='mdi:reload' />
+            </IconButton>
+          }
         />
 
         <DataGrid
           autoHeight
-          rows={users}
+          rows={users || []}
           columns={columns}
           disableSelectionOnClick
           disableColumnMenu
           disableColumnFilter
           getRowId={(row) => row[UserFields.FirebaseUID]}
           hideFooterPagination
+
+          loading={!users}
         />
       </Card>
     </React.Fragment>
