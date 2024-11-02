@@ -16,7 +16,7 @@ export interface Payment {
 }
 
 export enum WalletFields {
-  Id = 'id',
+  Id = '_id',
   Transactions = 'transactions',
   Balance = 'balance',
   Total = 'total'
@@ -73,4 +73,16 @@ export enum TransactionStatus {
 export enum TransactionTypes {
   Deposit = 'deposit',
   Withdraw = 'withdraw'
+}
+
+export enum PendingWithdrawalsFields {
+  WalletId = 'walletId',
+  BuddyId = 'userId',
+  BuddyName = 'userName'
+}
+
+export interface PendingWithdrawals {
+  [PendingWithdrawalsFields.WalletId]: string,
+  [PendingWithdrawalsFields.BuddyId]: string,
+  [PendingWithdrawalsFields.BuddyName]: string,
 }

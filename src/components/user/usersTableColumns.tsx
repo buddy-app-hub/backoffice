@@ -1,10 +1,12 @@
+import React from "react";
 import { Box, Typography } from "@mui/material";
 import {GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
 import {UserFields, UserPersonalDataFields} from "../../types/user";
-import {DateFormatter} from "../../utils/dateFormatter";
+import {DateFormatter} from "src/utils/dateFormatter";
 import Tooltip from "@mui/material/Tooltip";
-import Icon from "../../@core/components/icon";
-import React from "react";
+import Icon from "src/@core/components/icon";
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import {ThemeColor} from "../../@core/layouts/types";
 
 export const columnName : GridColDef = {
   flex: 0.15,
@@ -88,29 +90,25 @@ export const columnBuddyConfirmed : GridColDef = {
   renderCell: (params: GridRenderCellParams) => {
     const user = params.row;
     let msgTooltip = "En proceso de registración";
-    let color = 'rgba(62, 181, 253, 0.5)';
+    let avatarColor: ThemeColor = 'primary';
     let icon = "mdi:account-edit"
 
     if (user[UserFields.IsApprovedBuddy]) {
       msgTooltip = 'Buddy confirmado';
-      color = 'rgba(86, 202, 0, 0.5)';
+      avatarColor = 'success'
       icon = 'mdi:account-check'
     } else if (user[UserFields.IsApplicationToBeBuddyUnderReview]) {
       msgTooltip = 'Pendiente de aprobación';
-      color = 'rgba(255, 180, 0, 0.5)';
+      avatarColor = 'warning'
       icon = 'mdi:account-clock'
     }
-
-    /*const colors = [
-      hexToRGBA(theme.palette.success.main, 0.5),
-      hexToRGBA(theme.palette.warning.main, 0.5),
-      hexToRGBA(theme.palette.primary.main, 0.2)
-    ];*/
 
     return (
       <Tooltip title={msgTooltip}>
         <Box>
-          <Icon icon={icon} color={color} />
+          <CustomAvatar skin='light' color={avatarColor} sx={{ mr: 2.5, width: 30, height: 30 }}>
+            <Icon icon={icon} fontSize={'20px'} />
+          </CustomAvatar>
         </Box>
       </Tooltip>
     )

@@ -1,16 +1,22 @@
-import {useContext} from "react";
-import {UserProfilePageContext} from "../../context/UserProfilePageContext";
-import {Card, CardHeader, CardContent, Typography, Stack} from "@mui/material";
-import {NumberFormatter} from "../../utils/numberFormatter";
-import {WalletFields} from "../../types/payments";
+import React, {useContext} from "react";
+import {UserProfilePageContext} from "src/context/UserProfilePageContext";
+import {Card, CardContent, CardHeader, Link, Stack, Typography} from "@mui/material";
+import {NumberFormatter} from "src/utils/numberFormatter";
+import {TransactionFields, TransactionStatus, TransactionTypes, WalletFields} from "src/types/payments";
 import {Skeleton} from "@mui/lab";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import TransactionsList from "../transactions/TransactionsList";
+import Alert from "@mui/material/Alert";
 
 const UserWalletDetail = () => {
-  const { wallet } = useContext(UserProfilePageContext)
-
+  const { user, wallet } = useContext(UserProfilePageContext)
+  const userPendingWithdrawals = (wallet && user) ?
+    wallet[WalletFields.Transactions].find(t =>
+      t[TransactionFields.Type] === TransactionTypes.Withdraw &&
+      t[TransactionFields.Status] === TransactionStatus.Pending)
+    :
+    undefined;
 
   return (
     <Card>
@@ -45,6 +51,24 @@ const UserWalletDetail = () => {
             <Typography variant='body2'>Saldo Actual</Typography>
           </Box>
         </Stack>
+
+        {
+          userPendingWithdrawals &&
+            <Stack mt={5}>
+              <Alert color={'warning'} severity={'warning'}>
+                El usuario ha solicitado el retiro de su saldo actual —{' '}
+                <Link
+                  component="button"
+                  underline="hover"
+                  color="inherit"
+                  fontWeight={700}
+                >
+                  revísalo ahora
+                </Link>
+                !
+              </Alert>
+            </Stack>
+        }
 
         <Stack direction={'column'} mt={5} spacing={5}>
           <Divider />
