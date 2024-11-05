@@ -14,6 +14,8 @@ import {NumberFormatter} from "../../utils/numberFormatter";
 import {WalletFields} from "../../types/payments";
 import {UserBuddyDetailDialog} from "../buddies/UserBuddyDetailDialog";
 import UserIdentityDialog from "./UserIdentityDialog";
+import StarRatingWithHistory from "../StarRatingWithHistory";
+import {MeetingFields} from "../../types/connections";
 
 const UserDetailCard = () => {
   const router = useRouter();
@@ -58,18 +60,9 @@ const UserDetailCard = () => {
 
           {
             user ?
-              <Stack direction={'row'} spacing={1} alignItems={'initial'} sx={{ mt: '3px !important' }}>
-                <Icon icon='mdi:star' fontSize={'18px'} color={'rgba(255, 180, 0, 1)'} />
-
-                <Typography variant='caption' fontSize={'0.8rem'}>
-                  {
-                    isBuddy ?
-                      user[UserFields.BuddyProfile][UserProfileFields.GlobalRating].toLocaleString('en-EN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-                      :
-                      user[UserFields.ElderProfile][UserProfileFields.GlobalRating].toLocaleString('en-EN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-                  }
-                </Typography>
-              </Stack>
+              <StarRatingWithHistory rating={isBuddy ? user[UserFields.BuddyProfile][UserProfileFields.GlobalRating] : user[UserFields.ElderProfile][UserProfileFields.GlobalRating]}
+                                     field={isBuddy ? MeetingFields.ElderReviewForBuddy : MeetingFields.BuddyReviewForElder}
+              />
               :
               null
           }

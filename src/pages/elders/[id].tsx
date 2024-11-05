@@ -6,7 +6,7 @@ import {User} from "src/types/user";
 import {ApiUser} from "src/services/userApi";
 import {ApiConnection} from "src/services/connectionApi";
 import {UserProfilePageContext} from "src/context/UserProfilePageContext";
-import {Connection, ConnectionFields, Meeting} from "src/types/connections";
+import {Connection, ConnectionFields, Meeting, MeetingFields} from "src/types/connections";
 import UserConnectionsTotals from "src/components/user/UserConnectionsTotals";
 
 const ElderProfilePage = () => {
@@ -27,7 +27,15 @@ const ElderProfilePage = () => {
       ApiConnection.getConnectionByElderId(id)
         .then(response => {
           setConnections(response);
-          const m = response ? response.map(x => x?.[ConnectionFields.Meetings] || []).flat() : [];
+          const m = response ? response
+            .map(x => (x && x[ConnectionFields.Meetings]) ? x[ConnectionFields.Meetings].map(a => {
+              return {
+                ...a,
+                [MeetingFields.ElderId]: x[ConnectionFields.ElderId],
+                [MeetingFields.BuddyId]: x[ConnectionFields.BuddyId],
+              }
+            }) : [])
+            .flat() : [];
           setMeetings(m);
         })
         .catch(() => setErrorConnections("Ocurrió un error al obtener las conexiones del Elder"))
