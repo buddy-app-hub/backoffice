@@ -1,17 +1,17 @@
 import {useRouter} from "next/router";
 import Grid from "@mui/material/Grid";
-import UserDetailCard from "../../components/user/UserDetailCard";
+import UserDetailCard from "src/components/user/UserDetailCard";
 import {useEffect, useState} from "react";
-import {User, UserFields} from "../../types/user";
-import {ApiUser} from "../../services/userApi";
-import {ApiConnection} from "../../services/connectionApi";
-import {UserProfilePageContext} from "../../context/UserProfilePageContext";
+import {User, UserFields} from "src/types/user";
+import {ApiUser} from "src/services/userApi";
+import {ApiConnection} from "src/services/connectionApi";
+import {UserProfilePageContext} from "src/context/UserProfilePageContext";
 import {Connection, ConnectionFields, Meeting} from "src/types/connections";
-import UserConnectionsTotals from "../../components/user/UserConnectionsTotals";
-import {WalletSummary} from "../../types/payments";
-import {ApiPayments} from "../../services/paymentApi";
-import UserWalletDetail from "../../components/user/UserWalletDetail";
-import UserProfitPerMonths from "../../components/user/UserProfitPerMonths";
+import UserConnectionsTotals from "src/components/user/UserConnectionsTotals";
+import {WalletSummary} from "src/types/payments";
+import {ApiPayments} from "src/services/paymentApi";
+import UserWalletDetail from "src/components/user/UserWalletDetail";
+import UserProfitPerMonths from "src/components/user/UserProfitPerMonths";
 
 const BuddyProfilePage = () => {
   const router = useRouter();
@@ -49,6 +49,7 @@ const BuddyProfilePage = () => {
 
   const loadUser = () => {
     setBuddy(undefined);
+    setWallet(undefined);
 
     if (id && !Array.isArray(id)) {
       ApiUser.getBuddyById(id)

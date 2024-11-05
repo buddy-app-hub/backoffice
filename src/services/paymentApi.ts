@@ -1,5 +1,5 @@
 import {ApiPaymentsService} from "./apiService";
-import {Payment, Wallet, WalletSummary} from "../types/payments";
+import {Payment, Transaction, Wallet, WalletSummary} from "../types/payments";
 
 export const ApiPayments = {
 
@@ -10,6 +10,11 @@ export const ApiPayments = {
     ApiPaymentsService.get(`/wallets`),
 
   getWalletById: async (id: string) : Promise<WalletSummary> =>
-    ApiPaymentsService.get(`/wallets/${id}`)
+    ApiPaymentsService.get(`/wallets/${id}`),
+
+  updateWallet: async (id: string, transactions: Transaction[]) : Promise<any> =>
+    ApiPaymentsService.put(`/wallets/${id}`, {
+      "transactions": transactions
+    }),
 }
 

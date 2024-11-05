@@ -29,6 +29,8 @@ import { tokenStorage } from 'src/utils/tokenStorage'
 import { onAuthStateChanged } from '@firebase/auth'
 import { auth } from 'src/utils/firebase'
 import {AppDataContextProvider} from "../context/AppDataContext";
+import {LoaderContextProvider} from "../context/LoaderContext";
+import LoaderManager from "../layouts/components/LoaderManager";
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -108,24 +110,28 @@ const App = (props: ExtendedAppProps) => {
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 
-        <AppDataContextProvider>
-          <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-            <SettingsConsumer>
-              {({ settings }) => {
-                return (
-                  <ThemeComponent settings={settings}>
-                    {/*<Guard authGuard={authGuard} guestGuard={guestGuard}>*/}
-                    {getLayout(<Component {...pageProps} />)}
-                    {/*</Guard>*/}
-                    <ReactHotToast>
-                      <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-                    </ReactHotToast>
-                  </ThemeComponent>
-                )
-              }}
-            </SettingsConsumer>
-          </SettingsProvider>
-        </AppDataContextProvider>
+        <LoaderContextProvider>
+          <AppDataContextProvider>
+            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+              <SettingsConsumer>
+                {({ settings }) => {
+                  return (
+                    <ThemeComponent settings={settings}>
+                      {/*<Guard authGuard={authGuard} guestGuard={guestGuard}>*/}
+                      {getLayout(<Component {...pageProps} />)}
+                      {/*</Guard>*/}
+                      <ReactHotToast>
+                        <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+                      </ReactHotToast>
+                    </ThemeComponent>
+                  )
+                }}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </AppDataContextProvider>
+
+          <LoaderManager />
+        </LoaderContextProvider>
       </CacheProvider>
     </Provider>
   )

@@ -8,6 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import {Box, Grid, Stack, Typography} from "@mui/material";
 import ButtonGroupAccept from "../ButtonGroupAccept";
 import {useAppGlobalData} from "src/context/AppDataContext";
+import {useLoader} from "src/context/LoaderContext";
 
 interface UserBuddyDetailDialogProps {
   open: boolean,
@@ -18,17 +19,22 @@ interface UserBuddyDetailDialogProps {
 
 export function UserBuddyDetailDialog({ open, user, onClose, onSubmit }: UserBuddyDetailDialogProps) {
   const { reloadBuddies } = useAppGlobalData();
+  const { showLoader, hideLoader } = useLoader();
   const [srcPresentation, setSrcPresentation] = useState<string>();
 
   const nameBuddy = user ? `${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName]} ${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.LastName]}` : ''
 
   const onHandleSubmit = (approve: boolean) => {
     if (user) {
+      showLoader();
       const promise = approve ? ApiUser.approveBuddy : ApiUser.rejectBuddy;
 
       promise(user[UserFields.FirebaseUID])
         .then(onSubmit)
-        .finally(reloadBuddies)
+        .finally(() => {
+          reloadBuddies();
+          hideLoader();
+        })
     }
   }
 
