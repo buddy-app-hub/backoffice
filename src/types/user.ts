@@ -21,7 +21,11 @@ export enum UserFields {
   IsApprovedBuddy = 'isApprovedBuddy',
   IsApplicationToBeBuddyUnderReview = 'isApplicationToBeBuddyUnderReview',
 
-  WalletId = 'walletId'
+  WalletId = 'walletId',
+
+  BankAccount = 'bankAccount',
+  BuddyProfile = 'buddyProfile',
+  ElderProfile = 'elderProfile'
 }
 
 export interface User {
@@ -36,6 +40,10 @@ export interface User {
   [UserFields.IsApprovedBuddy]: boolean,
   [UserFields.IsApplicationToBeBuddyUnderReview]: boolean,
   [UserFields.WalletId]?: string,
+
+  [UserFields.BankAccount]: BankAccount,
+  [UserFields.BuddyProfile]: UserProfile,
+  [UserFields.ElderProfile]: UserProfile,
 }
 
 export enum UserPersonalDataFields {
@@ -58,4 +66,34 @@ export interface UserPersonalData {
   [UserPersonalDataFields.Gender]: string;
   [UserPersonalDataFields.MaritalStatus]: string;
   [UserPersonalDataFields.Nationality]: string;
+}
+
+export enum UserProfileFields {
+  Interests = 'interests',
+  GlobalRating = 'globalRating',
+  Description = 'description'
+}
+
+export interface UserProfile {
+  [UserProfileFields.Interests]?: UserInterest[],
+  [UserProfileFields.GlobalRating]: number,
+  [UserProfileFields.Description]: string,
+}
+
+export enum BankAccountFields {
+  AccountNumber = 'bankAccountNumber',
+  AccountName = 'bankName'
+}
+
+export interface BankAccount {
+  [BankAccountFields.AccountName]: string,
+  [BankAccountFields.AccountNumber]: string,
+}
+
+export enum UserInterestFields {
+  Name = 'name'
+}
+
+export interface UserInterest {
+  [UserInterestFields.Name]: string
 }

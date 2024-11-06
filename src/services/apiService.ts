@@ -10,7 +10,7 @@ const fetchWithoutAuth = async (pathBase: string, url: string, methods: string, 
       'Content-Type': 'application/json',
     },
     method: methods,
-    body: body
+    body: body ? JSON.stringify(body) : undefined
   });
 };
 
@@ -68,6 +68,9 @@ export const ApiPaymentsService = {
     fetchWithoutAuth(ApiPaymentsService._path, url, "GET").then(getResponseBody).catch(getError),
 
   post: async (url: string, body: any = undefined) =>
-    fetchWithoutAuth(ApiPaymentsService._path, url, "POST", body).then().catch(getError)
+    fetchWithoutAuth(ApiPaymentsService._path, url, "POST", body).then().catch(getError),
+
+  put: async (url: string, body: any = undefined) =>
+    fetchWithoutAuth(ApiPaymentsService._path, url, "PUT", body).then().catch(getError)
 }
 

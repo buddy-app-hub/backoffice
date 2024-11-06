@@ -1,4 +1,4 @@
-import {Card, CardHeader, Grid, IconButton} from "@mui/material";
+import {Box, Card, CardHeader, Grid, IconButton} from "@mui/material";
 import {DataGrid, GridColDef, GridRenderCellParams, GridSortDirection} from "@mui/x-data-grid";
 import {useState} from "react";
 import {UserFields} from "src/types/user";
@@ -14,10 +14,13 @@ import {
 import BuddiesTotals from "src/components/buddies/BuddiesTotals";
 import {useRouter} from "next/router";
 import {useAppGlobalData} from "src/context/AppDataContext";
+import {PendingWithdrawalsFields} from "../../types/payments";
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import Tooltip from "@mui/material/Tooltip";
 
 const Buddies = () => {
   const router = useRouter();
-  const { buddies, reloadBuddies } = useAppGlobalData();
+  const { buddies, reloadBuddies, pendingWithdrawals } = useAppGlobalData();
 
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -26,6 +29,27 @@ const Buddies = () => {
     columnGenre,
     columnEmail,
     columnRegistrationDate,
+    {
+      flex: 0.01,
+      field: 'pendingWithdrawals',
+      headerName: '',
+      sortable: false,
+      disableColumnMenu: true,
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        pendingWithdrawals &&
+        pendingWithdrawals.filter(x => x[PendingWithdrawalsFields.BuddyId] === params.row[UserFields.FirebaseUID]).length ?
+          <Tooltip title={"Tiene retiros pendientes de aprobación"}>
+            <Box>
+              <CustomAvatar skin='light' color={'warning'} sx={{ mr: 2.5, width: 30, height: 30 }}>
+                <Icon icon='mdi:arrow-up-bold-circle-outline' fontSize={'20px'} />
+              </CustomAvatar>
+            </Box>
+          </Tooltip>
+          :
+          undefined
+      )
+    },
     columnBuddyConfirmed,
     {
       flex: 0.01,

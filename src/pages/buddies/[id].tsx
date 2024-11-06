@@ -1,17 +1,17 @@
 import {useRouter} from "next/router";
 import Grid from "@mui/material/Grid";
-import UserDetailCard from "../../components/user/UserDetailCard";
+import UserDetailCard from "src/components/user/UserDetailCard";
 import {useEffect, useState} from "react";
-import {User, UserFields} from "../../types/user";
-import {ApiUser} from "../../services/userApi";
-import {ApiConnection} from "../../services/connectionApi";
-import {UserProfilePageContext} from "../../context/UserProfilePageContext";
-import {Connection, ConnectionFields, Meeting} from "src/types/connections";
-import UserConnectionsTotals from "../../components/user/UserConnectionsTotals";
-import {WalletSummary} from "../../types/payments";
-import {ApiPayments} from "../../services/paymentApi";
-import UserWalletDetail from "../../components/user/UserWalletDetail";
-import UserProfitPerMonths from "../../components/user/UserProfitPerMonths";
+import {User, UserFields} from "src/types/user";
+import {ApiUser} from "src/services/userApi";
+import {ApiConnection} from "src/services/connectionApi";
+import {UserProfilePageContext} from "src/context/UserProfilePageContext";
+import {Connection, ConnectionFields, Meeting, MeetingFields} from "src/types/connections";
+import UserConnectionsTotals from "src/components/user/UserConnectionsTotals";
+import {WalletSummary} from "src/types/payments";
+import {ApiPayments} from "src/services/paymentApi";
+import UserWalletDetail from "src/components/user/UserWalletDetail";
+import UserProfitPerMonths from "src/components/user/UserProfitPerMonths";
 
 const BuddyProfilePage = () => {
   const router = useRouter();
@@ -33,7 +33,15 @@ const BuddyProfilePage = () => {
       ApiConnection.getConnectionByBuddyId(id)
         .then(response => {
           setConnections(response);
-          const m = response ? response.map(x => x?.[ConnectionFields.Meetings] || []).flat() : [];
+          const m = response ? response
+            .map(x => (x && x[ConnectionFields.Meetings]) ? x[ConnectionFields.Meetings].map(a => {
+              return {
+                ...a,
+                [MeetingFields.ElderId]: x[ConnectionFields.ElderId],
+                [MeetingFields.BuddyId]: x[ConnectionFields.BuddyId],
+              }
+            }) : [])
+            .flat() : [];
           setMeetings(m);
         })
         .catch(() => setErrorConnections("Ocurrió un error al obtener las conexiones del Buddy"))
@@ -49,6 +57,7 @@ const BuddyProfilePage = () => {
 
   const loadUser = () => {
     setBuddy(undefined);
+    setWallet(undefined);
 
     if (id && !Array.isArray(id)) {
       ApiUser.getBuddyById(id)
@@ -81,7 +90,7 @@ const BuddyProfilePage = () => {
       loadUser: loadUser
     }}>
       <Grid container spacing={6}>
-        <Grid item xs={12} md={5} lg={4}>
+        <Grid item xs={12} md={5} lg={4} alignSelf={'start'}>
           <UserDetailCard />
         </Grid>
 
