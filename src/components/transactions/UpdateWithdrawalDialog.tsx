@@ -1,5 +1,5 @@
 import {Transaction, TransactionFields, TransactionStatus, Wallet, WalletFields} from "src/types/payments";
-import {User} from "src/types/user";
+import {BankAccountFields, User, UserFields} from "src/types/user";
 import Dialog from "@mui/material/Dialog";
 import BaseDialogTitle from "../BaseDialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -77,6 +77,22 @@ const UpdateWithdrawalDialog = ({open, user, withdraw, wallet, onClose}: UpdateW
               <Typography variant={'body1'} fontWeight={500}>
                 {NumberFormatter.toStringCurrency(withdraw[TransactionFields.CurrencyId], withdraw[TransactionFields.Amount])}
               </Typography>
+            </Stack>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Stack spacing={0}>
+              <Typography variant={'body2'}>
+                Datos bancarios
+              </Typography>
+              <Stack direction={'row'} spacing={1} alignItems={'center'}>
+                <Typography variant={'body1'} fontWeight={500}>
+                  {user[UserFields.BankAccount]?.[BankAccountFields.AccountNumber] || "5029123156165151"}
+                </Typography>
+                <Typography variant={'subtitle2'} fontSize={'0.7rem'}>
+                  {` - ${user[UserFields.BankAccount]?.[BankAccountFields.AccountName] || "Banco Santander"}`}
+                </Typography>
+              </Stack>
             </Stack>
           </Grid>
 

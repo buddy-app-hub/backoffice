@@ -23,6 +23,7 @@ export enum UserFields {
 
   WalletId = 'walletId',
 
+  BankAccount = 'bankAccount',
   BuddyProfile = 'buddyProfile',
   ElderProfile = 'elderProfile'
 }
@@ -40,6 +41,7 @@ export interface User {
   [UserFields.IsApplicationToBeBuddyUnderReview]: boolean,
   [UserFields.WalletId]?: string,
 
+  [UserFields.BankAccount]: BankAccount,
   [UserFields.BuddyProfile]: UserProfile,
   [UserFields.ElderProfile]: UserProfile,
 }
@@ -67,9 +69,31 @@ export interface UserPersonalData {
 }
 
 export enum UserProfileFields {
-  GlobalRating = 'globalRating'
+  Interests = 'interests',
+  GlobalRating = 'globalRating',
+  Description = 'description'
 }
 
 export interface UserProfile {
-  [UserProfileFields.GlobalRating]: number
+  [UserProfileFields.Interests]?: UserInterest[],
+  [UserProfileFields.GlobalRating]: number,
+  [UserProfileFields.Description]: string,
+}
+
+export enum BankAccountFields {
+  AccountNumber = 'bankAccountNumber',
+  AccountName = 'bankName'
+}
+
+export interface BankAccount {
+  [BankAccountFields.AccountName]: string,
+  [BankAccountFields.AccountNumber]: string,
+}
+
+export enum UserInterestFields {
+  Name = 'name'
+}
+
+export interface UserInterest {
+  [UserInterestFields.Name]: string
 }
