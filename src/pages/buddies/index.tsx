@@ -1,10 +1,9 @@
-import {Card, CardHeader, Grid, IconButton} from "@mui/material";
+import {Box, Card, CardHeader, Grid, IconButton} from "@mui/material";
 import {DataGrid, GridColDef, GridRenderCellParams, GridSortDirection} from "@mui/x-data-grid";
-import {useEffect, useState} from "react";
-import {User, UserFields} from "src/types/user";
-import {ApiUser} from "../../services/userApi";
+import {useState} from "react";
+import {UserFields} from "src/types/user";
 import React from 'react';
-import Icon from "../../@core/components/icon";
+import Icon from "src/@core/components/icon";
 import {
   columnBuddyConfirmed,
   columnEmail,
@@ -12,24 +11,45 @@ import {
   columnName,
   columnRegistrationDate
 } from "src/components/user/usersTableColumns";
-import BuddiesTotals from "../../components/buddies/BuddiesTotals";
+import BuddiesTotals from "src/components/buddies/BuddiesTotals";
 import {useRouter} from "next/router";
+import {useAppGlobalData} from "src/context/AppDataContext";
+import {PendingWithdrawalsFields} from "../../types/payments";
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import Tooltip from "@mui/material/Tooltip";
 
 const Buddies = () => {
   const router = useRouter();
+  const { buddies, reloadBuddies, pendingWithdrawals } = useAppGlobalData();
 
   const [pageSize, setPageSize] = useState<number>(10);
-  const [buddies, setBuddies] = useState<User[]>([]);
-
-  useEffect(() => {
-    ApiUser.fetchUsers({ searchElders: false, searchBuddies: true }).then(setBuddies)
-  }, []);
 
   const columns: GridColDef[] = [
     columnName,
     columnGenre,
     columnEmail,
     columnRegistrationDate,
+    {
+      flex: 0.01,
+      field: 'pendingWithdrawals',
+      headerName: '',
+      sortable: false,
+      disableColumnMenu: true,
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        pendingWithdrawals &&
+        pendingWithdrawals.filter(x => x[PendingWithdrawalsFields.BuddyId] === params.row[UserFields.FirebaseUID]).length ?
+          <Tooltip title={"Tiene retiros pendientes de aprobación"}>
+            <Box>
+              <CustomAvatar skin='light' color={'warning'} sx={{ mr: 2.5, width: 30, height: 30 }}>
+                <Icon icon='mdi:arrow-up-bold-circle-outline' fontSize={'20px'} />
+              </CustomAvatar>
+            </Box>
+          </Tooltip>
+          :
+          undefined
+      )
+    },
     columnBuddyConfirmed,
     {
       flex: 0.01,
@@ -58,11 +78,16 @@ const Buddies = () => {
         <Card>
           <CardHeader
             title='Buddies'
+            action={
+              <IconButton onClick={reloadBuddies}>
+                <Icon icon='mdi:reload' />
+              </IconButton>
+            }
           />
 
           <DataGrid
             autoHeight
-            rows={buddies}
+            rows={buddies || []}
             columns={columns}
             pageSize={pageSize}
             disableSelectionOnClick
@@ -76,6 +101,8 @@ const Buddies = () => {
             }}
 
             onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+
+            loading={!buddies}
           />
         </Card>
       </Grid>

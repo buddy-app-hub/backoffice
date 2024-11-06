@@ -1,40 +1,33 @@
-import CustomAvatar from "../../@core/components/mui/avatar";
-import CustomChip from "../../@core/components/mui/chip";
+import CustomAvatar from "src/@core/components/mui/avatar";
+import CustomChip from "src/@core/components/mui/chip";
 import {Box, Button, Card, CardContent, CardHeader, Divider, Stack, Typography} from "@mui/material";
-import Icon from "../../@core/components/icon";
+import Icon from "src/@core/components/icon";
 import UserAvatar from "./UserAvatar";
-import {UserFields, UserPersonalDataFields} from "../../types/user";
-import {getFullNameUser} from "../../utils/userUtils";
+import {UserFields, UserPersonalDataFields, UserProfileFields} from "src/types/user";
+import {getFullNameUser} from "src/utils/userUtils";
 import {Skeleton} from "@mui/lab";
 import {DateFormatter} from "src/utils/dateFormatter";
 import {useRouter} from "next/router";
 import {useContext, useState} from "react";
-import {UserProfilePageContext} from "../../context/UserProfilePageContext";
-import {NumberFormatter} from "../../utils/numberFormatter";
-import {WalletFields} from "../../types/payments";
-import {UserBuddyDetailDialog} from "../buddies/UserBuddyDetailDialog";
+import {UserProfilePageContext} from "src/context/UserProfilePageContext";
+import {NumberFormatter} from "src/utils/numberFormatter";
+import {WalletFields} from "src/types/payments";
 import UserIdentityDialog from "./UserIdentityDialog";
+import StarRatingWithHistory from "../StarRatingWithHistory";
+import {MeetingFields} from "src/types/connections";
+import UserConditionBuddy from "../buddies/UserConditionBuddy";
+import UserConditionElder from "../elders/UserConditionElder";
 
 const UserDetailCard = () => {
   const router = useRouter();
   const { user, connections, wallet, loadUser } = useContext(UserProfilePageContext);
   const isBuddy = user && user[UserFields.UserType] === "buddy";
 
-  const [openDetailBuddy, setOpenDetailBuddy] = useState<boolean>(false);
   const [openIdentityBuddy, setOpenIdentityBuddy] = useState<boolean>(false);
-
-  const handleOpenDetailBuddy = () => setOpenDetailBuddy(true);
-
-  const handleCloseDetailBuddy = () => setOpenDetailBuddy(false);
 
   const handleOpenIdentityBuddy = () => setOpenIdentityBuddy(true);
 
   const handleCloseIdentityBuddy = () => setOpenIdentityBuddy(false);
-
-  const onUpdateStatusBuddy = () => {
-    setOpenDetailBuddy(false);
-    loadUser();
-  }
 
   const onNavigateBack = () => router.back();
 
@@ -51,17 +44,18 @@ const UserDetailCard = () => {
 
         <UserAvatar user={user} />
 
-        <Stack direction={'row'} spacing={2} sx={{ mb: 4 }} alignItems={'center'}>
+        <Stack direction={'row'} spacing={5} sx={{ mt: 1, mb: 3 }} alignItems={'center'}>
           <Typography variant='h6'>
             {getFullNameUser(user)}
           </Typography>
 
           {
-            user?.[UserFields.IsApprovedBuddy] &&
-              <Icon icon={"mdi:check-decagram"}
-                    fontSize={'1rem'}
-                    style={{ color: 'blue !important' }}
+            user ?
+              <StarRatingWithHistory rating={isBuddy ? user[UserFields.BuddyProfile][UserProfileFields.GlobalRating] : user[UserFields.ElderProfile][UserProfileFields.GlobalRating]}
+                                     field={isBuddy ? MeetingFields.ElderReviewForBuddy : MeetingFields.BuddyReviewForElder}
               />
+              :
+              null
           }
         </Stack>
 
@@ -148,49 +142,19 @@ const UserDetailCard = () => {
         </Box>
       </CardContent>
 
+      <CardContent sx={{ marginTop: 2 }}>
       {
-        isBuddy &&
-          <CardContent sx={{ marginTop: 2 }}>
-            <Stack spacing={2}>
-              <Typography variant='body2' color={'text'} fontWeight={500}>Condición de Buddy</Typography>
-
-              <Stack width={'100%'} alignItems={'center'}>
-                {
-                  user ?
-                    user[UserFields.IsApprovedBuddy] ?
-                      <CustomChip skin='light'
-                                  size='medium'
-                                  label={"Aprobado"}
-                                  color={'success'}
-                                  onClick={handleOpenDetailBuddy}
-                      />
-                      :
-                      user[UserFields.IsApplicationToBeBuddyUnderReview] ?
-                        <CustomChip skin='light'
-                                    size='medium'
-                                    label={"Pendiente de aprobación"}
-                                    color={'warning'}
-                                    onClick={handleOpenDetailBuddy}
-                        />
-                        :
-                        <CustomChip skin='light'
-                                    size='medium'
-                                    label={"En proceso de registración"}
-                                    color={'primary'}
-                        />
-                    :
-                    <Skeleton />
-                }
-              </Stack>
+        user ?
+          isBuddy ?
+            <UserConditionBuddy user={user} loadUser={loadUser} />
+            :
+            <UserConditionElder />
+          :
+            <Stack width={'100%'}>
+              <Skeleton />
             </Stack>
-          </CardContent>
       }
-
-      <UserBuddyDetailDialog open={openDetailBuddy}
-                             user={user}
-                             onClose={handleCloseDetailBuddy}
-                             onSubmit={onUpdateStatusBuddy}
-      />
+      </CardContent>
 
       <UserIdentityDialog open={openIdentityBuddy}
                           user={user}

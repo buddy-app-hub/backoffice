@@ -1,10 +1,11 @@
-import {Box, Card, CardContent, Stack, Typography} from "@mui/material";
-import {useEffect, useState} from "react";
-import {ApiPayments} from "src/services/paymentApi";
+import {Box, Card, CardContent, IconButton, Stack, Typography} from "@mui/material";
+import React, {useEffect, useState} from "react";
 import {Payment, PaymentFields} from "src/types/payments";
 
 import { styled } from '@mui/material/styles'
 import {Skeleton} from "@mui/lab";
+import {useAppGlobalData} from "src/context/AppDataContext";
+import Icon from "src/@core/components/icon";
 
 const Img = styled('img')({
   right: 7,
@@ -14,6 +15,7 @@ const Img = styled('img')({
 })
 
 const BillingTotals = () => {
+  const { payments, reloadPayments } = useAppGlobalData()
 
   const [totalProfit, setTotalProfit] = useState<Record<string, number>>()
 
@@ -38,14 +40,19 @@ const BillingTotals = () => {
   useEffect(() => {
     setTotalProfit(undefined);
 
-    ApiPayments.getPayments()
-      .then(calculateTotals)
-  }, []);
+    if (payments) calculateTotals(payments);
+  }, [payments]);
 
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
       <CardContent>
-        <Typography sx={{ mb: 6.5, fontWeight: 600 }}>Ganancia Total</Typography>
+        <Stack direction={'row'} spacing={5} display={'ruby'}>
+          <Typography sx={{ mb: 6.5, fontWeight: 600 }}>Ganancia Total</Typography>
+
+          <IconButton size={'small'} onClick={reloadPayments}>
+            <Icon fontSize={'18px'} icon='mdi:reload' />
+          </IconButton>
+        </Stack>
 
         {
           totalProfit ?

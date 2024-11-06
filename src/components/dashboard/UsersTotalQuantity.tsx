@@ -10,8 +10,8 @@ import Icon from "src/@core/components/icon";
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import {hexToRGBA} from 'src/@core/utils/hex-to-rgba'
 import {useTheme} from '@mui/material/styles'
-import {ApiUser} from "../../services/userApi";
-import {User, UserFields} from "../../types/user";
+import {User, UserFields} from "src/types/user";
+import {useAppGlobalData} from "src/context/AppDataContext";
 
 interface UsersTotalQuantityType {
   elders: number,
@@ -20,7 +20,8 @@ interface UsersTotalQuantityType {
 }
 
 const UsersTotalQuantity = () => {
-  const theme = useTheme()
+  const theme = useTheme();
+  const { allUsers, reloadAllUser, errorsBuddies, errorsElders } = useAppGlobalData()
 
   const [userTotals, setUserTotals] = useState<{
     empty: boolean,
@@ -101,25 +102,23 @@ const UsersTotalQuantity = () => {
 
   const setErrorFetch = () => setError("Ocurrió un error al obtener los usuarios");
 
-  const loadTotals = () => {
+  useEffect(() => {
     setUserTotals(undefined);
     setError(undefined);
 
-    ApiUser.fetchUsers()
-      .then(calculateTotals)
-      .catch(setErrorFetch)
-  }
+    if (allUsers) calculateTotals(allUsers);
+  }, [allUsers]);
 
   useEffect(() => {
-    loadTotals()
-  }, []);
+    if (errorsBuddies || errorsElders) setErrorFetch();
+  }, [errorsBuddies, errorsElders]);
 
   return (
     <Card>
       <CardHeader title='Usuarios'
                   titleTypographyProps={{sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }}}
                   action={
-                    <IconButton onClick={loadTotals}>
+                    <IconButton onClick={reloadAllUser}>
                       <Icon icon='mdi:reload' />
                     </IconButton>
                   }

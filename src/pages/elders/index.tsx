@@ -1,8 +1,7 @@
 import {Card, CardHeader, Grid, IconButton} from "@mui/material";
 import {DataGrid, GridColDef, GridRenderCellParams, GridSortDirection} from "@mui/x-data-grid";
-import {useEffect, useState} from "react";
-import {User, UserFields} from "src/types/user";
-import {ApiUser} from "src/services/userApi";
+import {useState} from "react";
+import {UserFields} from "src/types/user";
 import React from 'react';
 import Icon from "src/@core/components/icon";
 import {
@@ -13,15 +12,13 @@ import {
 } from "src/components/user/usersTableColumns";
 import EldersTotals from "src/components/elders/EldersTotals";
 import {useRouter} from "next/router";
+import {useAppGlobalData} from "../../context/AppDataContext";
 
 const Elders = () => {
   const router = useRouter();
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [elders, setElders] = useState<User[]>([]);
+  const { elders, reloadElders } = useAppGlobalData();
 
-  useEffect(() => {
-    ApiUser.fetchUsers({ searchElders: true, searchBuddies: false }).then(setElders)
-  }, []);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const columns: GridColDef[] = [
     columnName,
@@ -55,11 +52,16 @@ const Elders = () => {
         <Card>
           <CardHeader
             title='Elders'
+            action={
+              <IconButton onClick={reloadElders}>
+                <Icon icon='mdi:reload' />
+              </IconButton>
+            }
           />
 
           <DataGrid
             autoHeight
-            rows={elders}
+            rows={elders || []}
             columns={columns}
             pageSize={pageSize}
             disableSelectionOnClick
@@ -73,6 +75,8 @@ const Elders = () => {
             }}
 
             onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+
+            loading={!elders}
           />
         </Card>
       </Grid>

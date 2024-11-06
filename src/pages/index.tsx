@@ -5,6 +5,7 @@ import ConnectionsTotals from "../components/dashboard/ConnectionsTotals";
 import LastRegisteredUsers from "../components/dashboard/LastRegisteredUsers";
 import {tokenStorage} from "../utils/tokenStorage";
 import CircularProgress from "@mui/material/CircularProgress";
+import PendingWithdrawalsAlert from "../components/dashboard/PendingWithdrawalsAlert";
 
 const Home = () => {
 
@@ -18,6 +19,8 @@ const Home = () => {
           <UsersTotalQuantity />
 
           <BillingTotals />
+
+          <PendingWithdrawalsAlert />
         </Stack>
       </Grid>
 

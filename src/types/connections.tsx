@@ -27,6 +27,9 @@ export enum MeetingFields {
   DateLastModification = 'dateLastModification',
   ElderReviewForBuddy = 'elderReviewForBuddy',
   BuddyReviewForElder = 'buddyReviewForElder',
+
+  ElderId = 'elderID',
+  BuddyId = 'buddyID',
 }
 
 export interface Meeting {
@@ -41,6 +44,9 @@ export interface Meeting {
   [MeetingFields.DateLastModification]: string,
   [MeetingFields.ElderReviewForBuddy]: Review,
   [MeetingFields.BuddyReviewForElder]: Review,
+
+  [MeetingFields.ElderId]: string,
+  [MeetingFields.BuddyId]: string,
 }
 
 export enum MeetingScheduleFields {
@@ -78,9 +84,17 @@ export interface MeetingLocation {
 export enum ReviewFields {
   Rating = 'rating',
   Comment = 'comment',
+
+  UserName = 'userName',
+  Date = 'date'
 }
 
 export interface Review {
   [ReviewFields.Rating]: number,
   [ReviewFields.Comment]: string,
+}
+
+export interface ReviewWithData extends Review {
+  [ReviewFields.UserName]: string,
+  [ReviewFields.Date]: string,
 }
