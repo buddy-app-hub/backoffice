@@ -17,6 +17,8 @@ import {ApiPayments} from "src/services/paymentApi";
 import {getFullNameUser} from "../utils/userUtils";
 
 type AppDataContextType = {
+  reloadAllData: () => void,
+
   buddies: User[] | undefined,
   reloadBuddies: () => void,
   errorsBuddies: boolean | undefined,
@@ -47,6 +49,7 @@ type ProviderProps = {
 };
 
 const AppDataContext = React.createContext<AppDataContextType>({
+  reloadAllData: () => { },
   buddies: undefined,
   reloadBuddies: () => { },
   errorsBuddies: false,
@@ -153,16 +156,21 @@ export const AppDataContextProvider = ({ children }: ProviderProps) => {
     }
   }, [wallets, buddies]);
 
-  useEffect(() => {
+  const reloadAllData = () => {
     reloadAllUser();
     reloadConnections();
     reloadPayments();
     reloadWallets();
+  }
+
+  useEffect(() => {
+    reloadAllData();
   }, []);
 
   return (
     <AppDataContext.Provider
       value={{
+        reloadAllData: reloadAllData,
         buddies: buddies,
         reloadBuddies: reloadBuddies,
         errorsBuddies: errorsBuddies,
