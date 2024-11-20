@@ -17,6 +17,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import {useRouter} from "next/router";
 import {tokenStorage} from "../../utils/tokenStorage";
 import {useSessionUser} from "../../hooks/useSessionUser";
+import {useAppGlobalData} from "../../context/AppDataContext";
 
 const invalidCredentialMessages = ['auth/invalid-email', 'auth/invalid-credential', 'auth/missing-password', 'auth/user-not-found'];
 
@@ -28,6 +29,7 @@ const loginFormSchema = yup.object().shape({
 const LoginPage = () => {
   const router = useRouter();
   const { signOutUser } = useSessionUser();
+  const { reloadAllData } = useAppGlobalData();
 
   const methods = useForm<LoginParams>({
     resolver: yupResolver(loginFormSchema)
@@ -46,6 +48,7 @@ const LoginPage = () => {
     setPersistence(auth, browserLocalPersistence)
       .then(async () => {
         const userCredential = await signInWithEmailAndPassword(auth, data[LoginParamsFields.Mail], data[LoginParamsFields.Password]);
+        reloadAllData();
         router.push('/');
 
         return userCredential;
