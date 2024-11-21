@@ -97,3 +97,11 @@ export enum UserInterestFields {
 export interface UserInterest {
   [UserInterestFields.Name]: string
 }
+
+export enum GenderTypes {
+  Male = 'masculino',
+  Female = 'femenino',
+  NonBinary = 'no binario',
+  Another = 'otro',
+  PrefersNotToSay = 'prefiero no decir'
+}

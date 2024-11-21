@@ -22,3 +22,12 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+.capitalize-first-letter {
+  text-transform: none;
+  display: inline-block;
+}
+
+.capitalize-first-letter::first-letter {
+  text-transform: uppercase;
+}

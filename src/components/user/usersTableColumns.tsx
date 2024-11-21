@@ -54,7 +54,7 @@ export const columnGenre : GridColDef = {
   renderCell: (params: GridRenderCellParams) => (
     <Typography variant='body2'
                 sx={{ color: 'text.primary' }}
-                textTransform={'capitalize'}
+                className={"capitalize-first-letter"}
     >
       {params.row[UserFields.PersonalData][UserPersonalDataFields.Gender] ?? '-'}
     </Typography>
