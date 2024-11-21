@@ -8,10 +8,23 @@ import {ApiConnection} from "src/services/connectionApi";
 import {UserProfilePageContext} from "src/context/UserProfilePageContext";
 import {Connection, ConnectionFields, Meeting, MeetingFields} from "src/types/connections";
 import UserConnectionsTotals from "src/components/user/UserConnectionsTotals";
-import {WalletSummary} from "src/types/payments";
+import {PriceFields, WalletFields, WalletSummary} from "src/types/payments";
 import {ApiPayments} from "src/services/paymentApi";
 import UserWalletDetail from "src/components/user/UserWalletDetail";
 import UserProfitPerMonths from "src/components/user/UserProfitPerMonths";
+
+const emptyWalletSummary : WalletSummary = {
+  [WalletFields.Id]: '',
+  [WalletFields.Transactions]: [],
+  [WalletFields.Balance]: {
+    [PriceFields.Amount]: 0,
+    [PriceFields.CurrencyId]: "ARS"
+  },
+  [WalletFields.Total]: {
+    [PriceFields.Amount]: 0,
+    [PriceFields.CurrencyId]: "ARS"
+  }
+}
 
 const BuddyProfilePage = () => {
   const router = useRouter();
@@ -49,9 +62,12 @@ const BuddyProfilePage = () => {
   }
 
   const loadWalletDetail = () => {
-    if (buddy && buddy[UserFields.WalletId]) {
-      ApiPayments.getWalletById(buddy[UserFields.WalletId])
-        .then(setWallet)
+    if (buddy) {
+      if (buddy[UserFields.WalletId])
+        ApiPayments.getWalletById(buddy[UserFields.WalletId])
+          .then(setWallet)
+      else
+        setWallet(emptyWalletSummary);
     }
   }
 

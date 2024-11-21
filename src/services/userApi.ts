@@ -41,7 +41,25 @@ export const ApiUser = {
     } catch (e) {
       return false;
     }
-  }
+  },
+
+  validateIdentity: async (id: string, isBuddy: boolean): Promise<boolean> => {
+    try {
+      await ApiService.post(`/${isBuddy ? "buddies" : "elders"}/${id}/identity/approve`);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  rejectIdentity: async (id: string, isBuddy: boolean): Promise<boolean> => {
+    try {
+      await ApiService.post(`/${isBuddy ? "buddies" : "elders"}/${id}/identity/reject`);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
 }
 
 
