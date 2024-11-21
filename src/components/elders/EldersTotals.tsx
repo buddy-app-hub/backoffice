@@ -1,4 +1,4 @@
-import {User, UserFields} from "../../types/user";
+import {GenderTypes, User, UserFields, UserPersonalDataFields} from "../../types/user";
 import {ApexOptions} from "apexcharts";
 import {hexToRGBA} from "../../@core/utils/hex-to-rgba";
 import {Box, Card, Divider, Stack, Typography} from "@mui/material";
@@ -45,8 +45,11 @@ interface EldersTotalsProps {
 
 interface EldersTotalsTypes {
   totals: number,
-  unverified: number,
-  verifiedIdentity: number
+  male: number,
+  female: number,
+  nonBinary: number,
+  another: number,
+  prefersNotToSay: number
 }
 
 const EldersTotals = ({elders}: EldersTotalsProps) => {
@@ -54,7 +57,10 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
 
   const colors = [
     hexToRGBA(theme.palette.success.main, 0.5),
-    hexToRGBA(theme.palette.primary.main, 0.2)
+    hexToRGBA(theme.palette.primary.main, 0.2),
+    hexToRGBA(theme.palette.warning.main, 0.4),
+    hexToRGBA(theme.palette.error.main, 0.5),
+    hexToRGBA(theme.palette.grey[400], 0.5),
   ];
 
   const [totals, setTotals] = useState<{
@@ -71,15 +77,41 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
 
     const totals : EldersTotalsTypes = {
       totals: users.length,
-      unverified: 0,
-      verifiedIdentity: 0
+      male: 0,
+      female: 0,
+      nonBinary: 0,
+      another: 0,
+      prefersNotToSay: 0
     }
 
     users.forEach(x => {
-      if (x[UserFields.IsIdentityValidated])
-        totals.verifiedIdentity++;
-      else
-        totals.unverified++;
+      const personalData = x[UserFields.PersonalData];
+
+      if (!personalData) {
+        totals.prefersNotToSay++;
+        return;
+      }
+
+      const gender = personalData[UserPersonalDataFields.Gender].toLowerCase();
+
+      switch (gender) {
+        case GenderTypes.Male:
+          totals.male++;
+          return;
+        case GenderTypes.Female:
+          totals.female++;
+          return;
+        case GenderTypes.NonBinary:
+          totals.nonBinary++;
+          return;
+        case GenderTypes.Another:
+          totals.another++;
+          return;
+        case GenderTypes.PrefersNotToSay:
+        default:
+          totals.prefersNotToSay++;
+          return;
+      }
     });
 
     const chartData: ApexOptions = {
@@ -90,7 +122,7 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
       stroke: { width: 0 },
       legend: { show: false },
       dataLabels: { enabled: false },
-      labels: ['Con identidad verificada', 'No verificaron identidad'],
+      labels: ['Masculinos', 'Femeninos', 'No binarios', 'Otros', 'Prefiere no decir'],
       states: {
         hover: {
           filter: { type: 'none' }
@@ -152,7 +184,9 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
               <Grid container sx={{ my: [0, 4, 1.625] }}>
                 <Grid item xs={12} sx={{ mb: [3, 0], aspectRatio: '1 / 1' }} >
                   <ReactApexcharts type='donut'
-                                   series={[totals.type.verifiedIdentity, totals.type.unverified]}
+                                   series={[
+                                     totals.type.male, totals.type.female, totals.type.nonBinary,
+                                     totals.type.another, totals.type.prefersNotToSay]}
                                    options={totals.options}
                   />
                 </Grid>
@@ -168,18 +202,26 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
                   </Box>
                   <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
                   <Grid container>
-                    <Grid item xs={12} sx={{ mb: 4 }}>
-                      <EldersTotalsQuantityLabel label={'Con identidad verificada'}
-                                                  quantity={totals.type.verifiedIdentity}
-                                                  color={colors[0]}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sx={{ mb: 4 }}>
-                      <EldersTotalsQuantityLabel label={'No verificaron identidad'}
-                                                  quantity={totals.type.unverified}
-                                                  color={colors[1]}
-                      />
-                    </Grid>
+                    <EldersTotalsQuantityLabel label={'Masculinos'}
+                                                quantity={totals.type.male}
+                                                color={colors[0]}
+                    />
+                    <EldersTotalsQuantityLabel label={'Femeninos'}
+                                                quantity={totals.type.female}
+                                                color={colors[1]}
+                    />
+                    <EldersTotalsQuantityLabel label={'No binarios'}
+                                               quantity={totals.type.nonBinary}
+                                               color={colors[2]}
+                    />
+                    <EldersTotalsQuantityLabel label={'Otros'}
+                                               quantity={totals.type.another}
+                                               color={colors[3]}
+                    />
+                    <EldersTotalsQuantityLabel label={'Prefiere no decir'}
+                                               quantity={totals.type.prefersNotToSay}
+                                               color={colors[4]}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -199,20 +241,25 @@ interface EldersTotalsQuantityLabelProps {
 
 const EldersTotalsQuantityLabel = ({label, quantity, color}: EldersTotalsQuantityLabelProps) => {
   return (
-    <Stack direction={'row'} justifyContent={'space-between'}>
-      <Box
-        sx={{
-          mb: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          '& svg': { mr: 1.5, fontSize: '0.75rem', color: color },
-        }}
-      >
-        <Icon icon='mdi:circle' />
-        <Typography variant='body2'>{label}</Typography>
-      </Box>
-      <Typography sx={{ fontWeight: 600 }}>{quantity}</Typography>
-    </Stack>
+    quantity > 0 ?
+      <Grid item xs={12} sx={{ mb: 4 }}>
+        <Stack direction={'row'} justifyContent={'space-between'}>
+          <Box
+            sx={{
+              mb: 1.5,
+              display: 'flex',
+              alignItems: 'center',
+              '& svg': { mr: 1.5, fontSize: '0.75rem', color: color },
+            }}
+          >
+            <Icon icon='mdi:circle' />
+            <Typography variant='body2'>{label}</Typography>
+          </Box>
+          <Typography sx={{ fontWeight: 600 }}>{quantity}</Typography>
+        </Stack>
+      </Grid>
+      :
+      <React.Fragment />
   )
 }
 

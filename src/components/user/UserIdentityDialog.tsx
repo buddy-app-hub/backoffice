@@ -1,16 +1,23 @@
 import {User, UserFields, UserPersonalDataFields} from "../../types/user";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import Dialog from "@mui/material/Dialog";
 import BaseDialogTitle from "../BaseDialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {Grid, Stack, Typography} from "@mui/material";
+import {Box, Grid, Stack, Typography} from "@mui/material";
 import {FirebaseMediaService} from "../../services/firebaseMediaService";
 import IdentityMediaComponent from "./IdentityMediaComponent";
+import {Skeleton} from "@mui/lab";
+import ButtonGroupAccept from "../ButtonGroupAccept";
+import Alert from "@mui/material/Alert";
+import {useLoader} from "../../context/LoaderContext";
+import {ApiUser} from "../../services/userApi";
+import {useAppGlobalData} from "../../context/AppDataContext";
 
 interface UserIdentityDialogProps {
   open: boolean,
   user?: User,
   onClose: () => void,
+  onSubmit: () => void
 }
 
 interface IdentityMediaType {
@@ -19,11 +26,35 @@ interface IdentityMediaType {
   selfie?: string
 }
 
-const UserIdentityDialog = ({open, user, onClose}: UserIdentityDialogProps) => {
+const UserIdentityDialog = ({open, user, onClose, onSubmit}: UserIdentityDialogProps) => {
+  const { showLoader, hideLoader } = useLoader();
+  const { reloadBuddies, reloadElders } = useAppGlobalData();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataMedia, setDataMedia] = useState<IdentityMediaType>({});
+  const completedDocumentation = useMemo(() =>
+      dataMedia && !!dataMedia.front && !!dataMedia.back && !!dataMedia.selfie
+    , [dataMedia]);
 
   const nameBuddy = user ? `${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.FirstName]} ${user?.[UserFields.PersonalData]?.[UserPersonalDataFields.LastName]}` : ''
+
+  const onHandleSubmit = (approve: boolean) => {
+    if (user) {
+      showLoader();
+      const isBuddy = user[UserFields.UserType] === 'buddy';
+      const promise = approve ? ApiUser.validateIdentity : ApiUser.rejectIdentity;
+
+      promise(user[UserFields.FirebaseUID], isBuddy)
+        .then(onSubmit)
+        .finally(() => {
+          if (isBuddy)
+            reloadBuddies();
+          else
+            reloadElders();
+
+          hideLoader();
+        })
+    }
+  }
 
   const searchIdentityMedia = (id: string) => {
     setLoading(true);
@@ -111,6 +142,35 @@ const UserIdentityDialog = ({open, user, onClose}: UserIdentityDialogProps) => {
             </Stack>
           </Grid>
 
+          <Grid item xs={12}>
+            {
+              loading ?
+                <Skeleton />
+                :
+                completedDocumentation ?
+                  user?.[UserFields.IsIdentityValidated] ?
+                    <Alert color={"success"} severity={"success"}>
+                      Identidad validada
+                    </Alert>
+                    :
+                    <Box p={3}>
+                      <ButtonGroupAccept onSubmit={onHandleSubmit} />
+                    </Box>
+                  :
+                  <Alert color={"info"} severity={"info"}>
+                    El usuario todavía no cargó toda la documentación requerida
+                  </Alert>
+            }
+
+          </Grid>
+
+          {/*
+              <Grid item xs={12}>
+                <Typography variant={'body2'}>
+                  Estado
+                </Typography>
+
+              </Grid>*/}
         </Grid>
       </DialogContent>
     </Dialog>

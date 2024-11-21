@@ -17,6 +17,7 @@ import StarRatingWithHistory from "../StarRatingWithHistory";
 import {MeetingFields} from "src/types/connections";
 import UserConditionBuddy from "../buddies/UserConditionBuddy";
 import UserConditionElder from "../elders/UserConditionElder";
+import UserValidatedComponent from "./UserValidatedComponent";
 
 const UserDetailCard = () => {
   const router = useRouter();
@@ -28,6 +29,11 @@ const UserDetailCard = () => {
   const handleOpenIdentityBuddy = () => setOpenIdentityBuddy(true);
 
   const handleCloseIdentityBuddy = () => setOpenIdentityBuddy(false);
+
+  const onUpdateStatusIdentity = () => {
+    setOpenIdentityBuddy(false);
+    loadUser();
+  }
 
   const onNavigateBack = () => router.back();
 
@@ -45,9 +51,23 @@ const UserDetailCard = () => {
         <UserAvatar user={user} />
 
         <Stack direction={'row'} spacing={5} sx={{ mt: 1, mb: 3 }} alignItems={'center'}>
-          <Typography variant='h6'>
-            {getFullNameUser(user)}
-          </Typography>
+          <Stack direction={'row'} spacing={2} alignItems={'center'}>
+            <Typography variant='h6'>
+              {getFullNameUser(user)}
+            </Typography>
+
+            <UserValidatedComponent user={user} />
+          </Stack>
+        </Stack>
+
+        <Stack direction={'row'} spacing={2} alignItems={'center'}>
+          <CustomChip
+            skin='light'
+            size='small'
+            label={user?.[UserFields.UserType]}
+            color={'secondary'}
+            sx={{ textTransform: 'capitalize' }}
+          />
 
           {
             user ?
@@ -58,14 +78,6 @@ const UserDetailCard = () => {
               null
           }
         </Stack>
-
-        <CustomChip
-          skin='light'
-          size='small'
-          label={user?.[UserFields.UserType]}
-          color={'secondary'}
-          sx={{ textTransform: 'capitalize' }}
-        />
       </CardContent>
 
       <CardContent sx={{ my: 1 }}>
@@ -110,9 +122,14 @@ const UserDetailCard = () => {
         <Stack direction={'row'} justifyContent={'space-between'}>
           <Typography variant='h6'>Detalle</Typography>
 
-          <Button size={'small'} onClick={handleOpenIdentityBuddy}>
-            Ver identidad
-          </Button>
+          {
+            isBuddy ?
+              <Button size={'small'} onClick={handleOpenIdentityBuddy}>
+                Ver identidad
+              </Button>
+              :
+              <div />
+          }
         </Stack>
         <Divider sx={{ mt: theme => `${theme.spacing(2)} !important`, mb: theme => `${theme.spacing(4)} !important` }} />
         <Box sx={{ pb: 1 }}>
@@ -159,6 +176,7 @@ const UserDetailCard = () => {
       <UserIdentityDialog open={openIdentityBuddy}
                           user={user}
                           onClose={handleCloseIdentityBuddy}
+                          onSubmit={onUpdateStatusIdentity}
       />
     </Card>
   )

@@ -2,7 +2,7 @@ import {Price, PriceFields} from "../types/payments";
 
 export const NumberFormatter = {
   toStringCurrency: (currencyId: string, amount: number | null | undefined): string => {
-    if (!amount) return '-';
+    if (!amount && amount !== 0) return '-';
 
     const currencyDesc = currencyId === "ARS" ? '$' : 'USD';
 
@@ -10,6 +10,9 @@ export const NumberFormatter = {
   },
 
   priceToStringCurrency: (price: Price | null | undefined): string =>
-    !price ? '-' : NumberFormatter.toStringCurrency(price[PriceFields.CurrencyId] || "ARS", price[PriceFields.Amount]),
+    !price ?
+      NumberFormatter.toStringCurrency("ARS", 0)
+      :
+      NumberFormatter.toStringCurrency(price[PriceFields.CurrencyId] || "ARS", price[PriceFields.Amount]),
 }
 
