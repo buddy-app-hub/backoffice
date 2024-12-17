@@ -51,7 +51,7 @@ const Elders = () => {
       <Grid item xs={12} md={9}>
         <Card>
           <CardHeader
-            title='Elders'
+            title='Adultos Mayores'
             action={
               <IconButton onClick={reloadElders}>
                 <Icon icon='mdi:reload' />
