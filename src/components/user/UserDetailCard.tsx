@@ -64,7 +64,7 @@ const UserDetailCard = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={user?.[UserFields.UserType]}
+            label={user ? isBuddy ? user[UserFields.UserType] : 'Adulto mayor' : ''}
             color={'secondary'}
             sx={{ textTransform: 'capitalize' }}
           />

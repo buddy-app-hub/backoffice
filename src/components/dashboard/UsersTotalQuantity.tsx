@@ -53,7 +53,7 @@ const UsersTotalQuantity = () => {
       stroke: { width: 0 },
       legend: { show: false },
       dataLabels: { enabled: false },
-      labels: ['Buddies', 'Elders'],
+      labels: ['Buddies', 'Adultos mayores'],
       states: {
         hover: {
           filter: { type: 'none' }
@@ -164,7 +164,7 @@ const UsersTotalQuantity = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sx={{ mb: 4 }}>
-                  <UsersTotalQuantityLabel label={'Elders'}
+                  <UsersTotalQuantityLabel label={'Adultos mayores'}
                                            quantity={userTotals.type.elders}
                                            to={'/elders'}
                                            color={hexToRGBA(theme.palette.primary.main, 0.4)}

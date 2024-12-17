@@ -196,7 +196,7 @@ const EldersTotals = ({elders}: EldersTotalsProps) => {
                       <Icon icon='mdi:human-cane' />
                     </CustomAvatar>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      <Typography variant='body2'>Total de Elders</Typography>
+                      <Typography variant='body2'>Total de Adultos Mayores</Typography>
                       <Typography variant='h6'>{totals.type.totals}</Typography>
                     </Box>
                   </Box>

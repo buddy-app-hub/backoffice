@@ -15,7 +15,7 @@ const navigation = (): VerticalNavItemsType => {
       path: '/buddies'
     },
     {
-      title: 'Elders',
+      title: 'Adultos Mayores',
       icon: 'mdi:human-cane',
       path: '/elders'
     },
