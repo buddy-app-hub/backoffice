@@ -118,7 +118,7 @@ const UserConnectionsTotals = ({ error }: UserConnectionsTotalsProps) => {
         {
           totals && totals.empty && !error &&
             <Alert color={'info'} severity={'info'}>
-              El Buddy por el momento no ha realizado conexiones con Elders.
+              El Buddy por el momento no ha realizado conexiones con adultos mayores.
             </Alert>
         }
 

@@ -38,7 +38,7 @@ const ElderProfilePage = () => {
             .flat() : [];
           setMeetings(m);
         })
-        .catch(() => setErrorConnections("Ocurrió un error al obtener las conexiones del Elder"))
+        .catch(() => setErrorConnections("Ocurrió un error al obtener las conexiones del adulto mayor"))
     }
   }
 
